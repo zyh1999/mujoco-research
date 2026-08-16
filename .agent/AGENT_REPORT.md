@@ -12,6 +12,8 @@ Set up the planner-executor infrastructure only. No research task was started.
   single-objective execution guards.
 - Preserved all pre-existing untracked research files outside `.agent/`.
 - Created/used the `agent-work` branch.
+- Published the repository's reports, code, and experiment logs, with model
+  weights and checkpoint paths excluded by `.gitignore`.
 
 ## Validation
 
@@ -21,13 +23,12 @@ Set up the planner-executor infrastructure only. No research task was started.
 ## Git
 
 - Infrastructure commit: `f5028e4fc12619057e92dfa7baf35ff96817f616`
+- Research-content commit: `df9d5e18279d096218a923ad5d4df37c35fdca68`
 - Remote target: `git@github.com:zyh1999/mujoco-research.git`.
-- Push: not performed; explicit approval is required before publishing the
-  research-state and infrastructure context in `.agent/STATE.md`.
+- Push: completed to the public `agent-work` branch.
 
 ## Planner action required
 
-Confirm whether the current `.agent/` payload may be published to the public
-repository. Replace `TASK.md` only when a bounded research task is ready.
+Replace `TASK.md` only when a bounded research task is ready.
 
-NEED_DECISION
+TASK_COMPLETE
