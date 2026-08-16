@@ -22,10 +22,12 @@ Set up the planner-executor infrastructure only. No research task was started.
 
 - Infrastructure commit: `f5028e4fc12619057e92dfa7baf35ff96817f616`
 - Remote target: `git@github.com:zyh1999/mujoco-research.git`.
-- Push target: public GitHub repository, branch `agent-work`.
+- Push: not performed; explicit approval is required before publishing the
+  research-state and infrastructure context in `.agent/STATE.md`.
 
 ## Planner action required
 
-Replace `TASK.md` only when a bounded research task is ready.
+Confirm whether the current `.agent/` payload may be published to the public
+repository. Replace `TASK.md` only when a bounded research task is ready.
 
-TASK_COMPLETE
+NEED_DECISION
