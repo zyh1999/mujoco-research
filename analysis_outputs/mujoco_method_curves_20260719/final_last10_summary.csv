@@ -1,0 +1,176 @@
+group,method,environment,seeds,mean_last10,stderr_last10
+shared,PPO fixed lr (5s),ant,5,3006.7390900021983,259.60611965617073
+shared,PPO fixed lr (5s),halfcheetah,5,5147.0103634606,223.89756562897043
+shared,PPO fixed lr (5s),hopper,5,2508.8816005262,205.47265657928122
+shared,PPO fixed lr (5s),humanoid,5,4963.669892612797,451.53687493795684
+shared,PPO fixed lr (5s),humanoidstandup,5,125612.00862972334,1650.0736853145488
+shared,PPO fixed lr (5s),swimmer,5,111.84065754840017,10.42306863957597
+shared,PPO fixed lr (5s),walker2d,5,3545.443349383001,54.285484226874686
+shared,RAT EF+GGN tuned (5s),ant,5,5138.165844365399,394.18146644201687
+shared,RAT EF+GGN tuned (5s),halfcheetah,5,5155.939522121601,169.72560698509383
+shared,RAT EF+GGN tuned (5s),hopper,5,2427.027923508401,183.35051099148788
+shared,RAT EF+GGN tuned (5s),humanoid,5,6169.089329056402,334.09719963205373
+shared,RAT EF+GGN tuned (5s),humanoidstandup,5,156048.47726425438,623.4793668738425
+shared,RAT EF+GGN tuned (5s),swimmer,5,104.3536881506,38.70142742082354
+shared,RAT EF+GGN tuned (5s),walker2d,5,4516.576056173203,233.32082303071735
+shared,Exact-RAT d=.03 (5s),ant,5,5138.0,394.081336782142
+shared,Exact-RAT d=.03 (5s),halfcheetah,5,4508.800000000001,157.26995898772321
+shared,Exact-RAT d=.03 (5s),hopper,5,834.0395999999998,363.247750534205
+shared,Exact-RAT d=.03 (5s),humanoid,5,6169.2,333.98613743687025
+shared,Exact-RAT d=.03 (5s),humanoidstandup,5,155920.0,566.9215113223346
+shared,Exact-RAT d=.03 (5s),swimmer,5,104.34200000000014,38.68865252241278
+shared,Exact-RAT d=.03 (5s),walker2d,5,4516.199999999999,232.8171814965545
+shared,Exact-RAT d=.1 (5s),ant,5,4950.8,150.7340041264744
+shared,Exact-RAT d=.1 (5s),halfcheetah,5,4950.4,342.36772628272075
+shared,Exact-RAT d=.1 (5s),hopper,5,712.6391999999994,382.3940319940155
+shared,Exact-RAT d=.1 (5s),humanoid,5,6041.8,339.98594088579597
+shared,Exact-RAT d=.1 (5s),humanoidstandup,5,152240.0,3487.348563020336
+shared,Exact-RAT d=.1 (5s),swimmer,5,36.67744000000003,15.179055944082965
+shared,Exact-RAT d=.1 (5s),walker2d,5,3722.4,737.4086112868496
+shared,Curv256 d=.03 (5s),ant,5,4782.4,100.8556394060342
+shared,Curv256 d=.03 (5s),halfcheetah,5,5272.6,87.96965385858921
+shared,Curv256 d=.03 (5s),hopper,5,2304.2799999999997,365.9118724501843
+shared,Curv256 d=.03 (5s),humanoid,5,6045.2,82.45568506779868
+shared,Curv256 d=.03 (5s),humanoidstandup,5,173960.0,18059.390908887264
+shared,Curv256 d=.03 (5s),swimmer,5,222.158,32.50311621983345
+shared,Curv256 d=.03 (5s),walker2d,5,4013.1999999999985,433.54208561568646
+shared,Curv256 d=.1 (5s),ant,5,4786.6,192.59766353722983
+shared,Curv256 d=.1 (5s),halfcheetah,5,4927.4000000000015,222.25966795620005
+shared,Curv256 d=.1 (5s),hopper,5,1518.9081999999999,583.5168106466515
+shared,Curv256 d=.1 (5s),humanoid,5,5852.4,137.4971272427173
+shared,Curv256 d=.1 (5s),humanoidstandup,5,165420.0,13235.384391848995
+shared,Curv256 d=.1 (5s),swimmer,5,116.97200000000001,45.593712110333804
+shared,Curv256 d=.1 (5s),walker2d,5,3581.0,490.37811941398854
+shared,Energy-free255+1 d=.03 (5s),ant,5,5124.6,48.58765275252551
+shared,Energy-free255+1 d=.03 (5s),halfcheetah,5,5214.199999999999,326.24567430082425
+shared,Energy-free255+1 d=.03 (5s),hopper,5,2765.6,324.8238907469708
+shared,Energy-free255+1 d=.03 (5s),humanoid,5,5923.2,217.7033302455431
+shared,Energy-free255+1 d=.03 (5s),humanoidstandup,5,155720.0,1094.7145746723206
+shared,Energy-free255+1 d=.03 (5s),swimmer,5,112.62199999999996,4.999248343501274
+shared,Energy-free255+1 d=.03 (5s),walker2d,5,5141.8,416.5848533012212
+shared,Energy-free255+1 d=.1 (5s),ant,5,4771.2,98.22290975123879
+shared,Energy-free255+1 d=.1 (5s),halfcheetah,5,4673.6,235.37982071537056
+shared,Energy-free255+1 d=.1 (5s),hopper,5,2649.8,339.01923249278934
+shared,Energy-free255+1 d=.1 (5s),humanoid,5,1481.3799999999999,760.4266791742646
+shared,Energy-free255+1 d=.1 (5s),humanoidstandup,5,139500.0,5062.410493035902
+shared,Energy-free255+1 d=.1 (5s),swimmer,5,106.00399999999999,29.73926438229434
+shared,Energy-free255+1 d=.1 (5s),walker2d,5,3023.8,215.8792254942564
+shared,Curv256 VF=4.0 (3s),ant,3,4716.0,285.15434417171343
+shared,Curv256 VF=4.0 (3s),halfcheetah,3,6477.333333333336,147.80317242122433
+shared,Curv256 VF=4.0 (3s),hopper,3,3332.6666666666665,27.155928348050352
+shared,Curv256 VF=4.0 (3s),humanoid,3,5478.666666666667,236.520847096215
+shared,Curv256 VF=4.0 (3s),humanoidstandup,3,160333.33333333334,2079.5298613976297
+shared,Curv256 VF=4.0 (3s),swimmer,3,339.86666666666656,14.740571374422634
+shared,Curv256 VF=4.0 (3s),walker2d,3,3885.0,251.75186195935078
+shared,Energy-free VF=1.5 (3s),ant,3,5187.0,62.17984668148783
+shared,Energy-free VF=1.5 (3s),halfcheetah,3,6252.333333333333,146.94027509312906
+shared,Energy-free VF=1.5 (3s),hopper,3,2644.633333333333,588.6202803543591
+shared,Energy-free VF=1.5 (3s),humanoid,3,6154.0,176.40011337864837
+shared,Energy-free VF=1.5 (3s),humanoidstandup,3,156400.0,305.5050463303894
+shared,Energy-free VF=1.5 (3s),swimmer,3,126.5,17.22914197902302
+shared,Energy-free VF=1.5 (3s),walker2d,3,4035.0,487.30927893211043
+shared,Grouped-rho4 legacy d=.03 (5s),ant,5,4742.4,226.47242657771827
+shared,Grouped-rho4 legacy d=.03 (5s),halfcheetah,5,5247.4,625.5095203112419
+shared,Grouped-rho4 legacy d=.03 (5s),hopper,5,3076.8,217.48733296447406
+shared,Grouped-rho4 legacy d=.03 (5s),humanoid,5,6127.2,175.16203926650317
+shared,Grouped-rho4 legacy d=.03 (5s),humanoidstandup,5,184940.0,17283.07264348559
+shared,Grouped-rho4 legacy d=.03 (5s),swimmer,5,63.32199999999996,14.439600202221657
+shared,Grouped-rho4 legacy d=.03 (5s),walker2d,5,4475.4,275.2132990972638
+shared,Grouped-rho4 legacy d=.1 (5s),ant,5,4458.200000000001,322.1776528563079
+shared,Grouped-rho4 legacy d=.1 (5s),halfcheetah,5,5510.4,339.8376965552821
+shared,Grouped-rho4 legacy d=.1 (5s),hopper,5,2716.2,184.15873587750323
+shared,Grouped-rho4 legacy d=.1 (5s),humanoid,5,5892.2,216.44708360243618
+shared,Grouped-rho4 legacy d=.1 (5s),humanoidstandup,5,149620.0,3418.245163823098
+shared,Grouped-rho4 legacy d=.1 (5s),swimmer,5,74.18,14.829760955591963
+shared,Grouped-rho4 legacy d=.1 (5s),walker2d,5,3622.8,250.4089455271117
+shared,Grouped-rho4 aligned d=.03 (5s),ant,5,5038.4,57.01280557909775
+shared,Grouped-rho4 aligned d=.03 (5s),halfcheetah,5,5283.0,390.33998001742015
+shared,Grouped-rho4 aligned d=.03 (5s),hopper,5,2908.4,136.18612264103854
+shared,Grouped-rho4 aligned d=.03 (5s),humanoid,5,6204.0,212.78580779741867
+shared,Grouped-rho4 aligned d=.03 (5s),humanoidstandup,5,158800.0,4128.0746117288145
+shared,Grouped-rho4 aligned d=.03 (5s),swimmer,5,142.36800000000002,39.90887099380286
+shared,Grouped-rho4 aligned d=.03 (5s),walker2d,5,4552.8,537.3009771068727
+no_shared,PPO fixed lr (5s),ant,5,4565.394424996402,141.95417507790123
+no_shared,PPO fixed lr (5s),halfcheetah,5,5858.965634986208,738.6336056061208
+no_shared,PPO fixed lr (5s),hopper,5,2294.6834367697998,364.78008513865217
+no_shared,PPO fixed lr (5s),humanoid,5,3188.1310763908,997.9612659729339
+no_shared,PPO fixed lr (5s),humanoidstandup,5,138235.02722425223,4409.800844473279
+no_shared,PPO fixed lr (5s),swimmer,5,149.21720870379994,11.541018211735931
+no_shared,PPO fixed lr (5s),walker2d,5,4658.318216222999,380.6890689419912
+no_shared,RAT EF+GGN tuned (5s),ant,5,5550.8868352806,73.03480104478206
+no_shared,RAT EF+GGN tuned (5s),halfcheetah,5,6645.9780552114,98.61129826552295
+no_shared,RAT EF+GGN tuned (5s),hopper,5,3439.362629705401,77.34255130256997
+no_shared,RAT EF+GGN tuned (5s),humanoid,5,6953.314634642801,84.68516353443249
+no_shared,RAT EF+GGN tuned (5s),humanoidstandup,5,195154.13023742475,12587.04407078533
+no_shared,RAT EF+GGN tuned (5s),swimmer,5,339.3052251657999,12.117685464491394
+no_shared,RAT EF+GGN tuned (5s),walker2d,5,5175.1104136004,146.47229815053228
+no_shared,Exact-RAT d=.03 (5s),ant,5,5550.2,73.07557731554367
+no_shared,Exact-RAT d=.03 (5s),halfcheetah,5,5564.0,63.94763482725533
+no_shared,Exact-RAT d=.03 (5s),hopper,5,1525.44,564.7460549663007
+no_shared,Exact-RAT d=.03 (5s),humanoid,5,6953.0,84.75435092076394
+no_shared,Exact-RAT d=.03 (5s),humanoidstandup,5,180680.0,16738.38104477252
+no_shared,Exact-RAT d=.03 (5s),swimmer,5,325.9000000000001,11.215926176647157
+no_shared,Exact-RAT d=.03 (5s),walker2d,5,5175.2,146.50372008928647
+no_shared,Exact-RAT d=.1 (5s),ant,5,5194.0,252.4297922195397
+no_shared,Exact-RAT d=.1 (5s),halfcheetah,5,6035.6,120.2824176677539
+no_shared,Exact-RAT d=.1 (5s),hopper,5,2097.6400000000003,658.4568206040544
+no_shared,Exact-RAT d=.1 (5s),humanoid,5,6796.8,112.05819916454128
+no_shared,Exact-RAT d=.1 (5s),humanoidstandup,5,160260.0,1271.0625476348516
+no_shared,Exact-RAT d=.1 (5s),swimmer,5,263.96000000000004,43.8987881381707
+no_shared,Exact-RAT d=.1 (5s),walker2d,5,4802.4,233.12413002518636
+no_shared,Curv256 d=.03 (5s),ant,5,4663.2,306.027515102809
+no_shared,Curv256 d=.03 (5s),halfcheetah,5,6039.5999999999985,209.9058360313031
+no_shared,Curv256 d=.03 (5s),hopper,5,2961.8,487.5988515162848
+no_shared,Curv256 d=.03 (5s),humanoid,5,6400.0,26.583829671437485
+no_shared,Curv256 d=.03 (5s),humanoidstandup,5,167380.0,4974.072777915499
+no_shared,Curv256 d=.03 (5s),swimmer,5,331.5800000000002,13.044669409379368
+no_shared,Curv256 d=.03 (5s),walker2d,5,4761.2,159.70078271567738
+no_shared,Curv256 d=.1 (5s),ant,5,4689.8,184.9436130284039
+no_shared,Curv256 d=.1 (5s),halfcheetah,5,6408.399999999999,110.62124569900617
+no_shared,Curv256 d=.1 (5s),hopper,5,3193.6,205.93921433277342
+no_shared,Curv256 d=.1 (5s),humanoid,5,5860.6,255.6432279564628
+no_shared,Curv256 d=.1 (5s),humanoidstandup,5,160520.0,1313.9254164525473
+no_shared,Curv256 d=.1 (5s),swimmer,5,323.64,8.883163850790998
+no_shared,Curv256 d=.1 (5s),walker2d,5,4137.0,256.1493704852698
+no_shared,Energy-free255+1 d=.03 (5s),ant,5,5204.4,76.24145853798967
+no_shared,Energy-free255+1 d=.03 (5s),halfcheetah,5,6783.0,70.8738315600335
+no_shared,Energy-free255+1 d=.03 (5s),hopper,5,3642.0,96.00260413134635
+no_shared,Energy-free255+1 d=.03 (5s),humanoid,5,6599.0,86.250797097766
+no_shared,Energy-free255+1 d=.03 (5s),humanoidstandup,5,163660.0,713.8627319029898
+no_shared,Energy-free255+1 d=.03 (5s),swimmer,5,336.36,10.861196987441113
+no_shared,Energy-free255+1 d=.03 (5s),walker2d,5,4789.0,85.71114279952168
+no_shared,Energy-free255+1 d=.1 (5s),ant,5,5009.8,32.4197470687234
+no_shared,Energy-free255+1 d=.1 (5s),halfcheetah,5,6270.800000000001,266.34815561591535
+no_shared,Energy-free255+1 d=.1 (5s),hopper,5,3499.4,79.0041771047582
+no_shared,Energy-free255+1 d=.1 (5s),humanoid,5,6432.4,215.77085067265224
+no_shared,Energy-free255+1 d=.1 (5s),humanoidstandup,5,162860.0,752.0638270785266
+no_shared,Energy-free255+1 d=.1 (5s),swimmer,5,287.58000000000004,33.69892283144967
+no_shared,Energy-free255+1 d=.1 (5s),walker2d,5,4621.2,112.71929737183424
+no_shared,Grouped-rho4 legacy d=.03 (5s),ant,5,3922.0,302.5440463800271
+no_shared,Grouped-rho4 legacy d=.03 (5s),halfcheetah,5,6410.4,422.20973461065535
+no_shared,Grouped-rho4 legacy d=.03 (5s),hopper,5,3353.6,98.25100508391759
+no_shared,Grouped-rho4 legacy d=.03 (5s),humanoid,5,6673.4,78.08239238138135
+no_shared,Grouped-rho4 legacy d=.03 (5s),humanoidstandup,5,185780.0,16312.43084276528
+no_shared,Grouped-rho4 legacy d=.03 (5s),swimmer,5,312.3799999999999,4.537664597565611
+no_shared,Grouped-rho4 legacy d=.03 (5s),walker2d,5,4853.0,405.73193120581476
+no_shared,Grouped-rho4 legacy d=.1 (5s),ant,5,4616.4,150.7241188396867
+no_shared,Grouped-rho4 legacy d=.1 (5s),halfcheetah,5,6742.4,149.19772116222148
+no_shared,Grouped-rho4 legacy d=.1 (5s),hopper,5,3365.6,35.103561072916804
+no_shared,Grouped-rho4 legacy d=.1 (5s),humanoid,5,6394.6,150.68331029015786
+no_shared,Grouped-rho4 legacy d=.1 (5s),humanoidstandup,5,159320.0,1949.2049661336284
+no_shared,Grouped-rho4 legacy d=.1 (5s),swimmer,5,199.33999999999992,44.2287191765712
+no_shared,Grouped-rho4 legacy d=.1 (5s),walker2d,5,4572.8,478.43540838863504
+no_shared,Grouped-rho4 aligned d=.03 (5s),ant,5,4710.655821737801,93.44326155556998
+no_shared,Grouped-rho4 aligned d=.03 (5s),halfcheetah,5,6452.6299497164,134.28026439008366
+no_shared,Grouped-rho4 aligned d=.03 (5s),hopper,5,3531.810574921799,75.78821696048664
+no_shared,Grouped-rho4 aligned d=.03 (5s),humanoid,5,6685.848999646594,240.18905472668868
+no_shared,Grouped-rho4 aligned d=.03 (5s),humanoidstandup,5,172677.54529362233,9126.83726180791
+no_shared,Grouped-rho4 aligned d=.03 (5s),swimmer,5,262.56,51.39166858548183
+no_shared,Grouped-rho4 aligned d=.03 (5s),walker2d,5,5048.611632150403,126.86773162202765
+no_shared,Hier16x64 d=.03 (5s),ant,5,4877.8,63.868145424773374
+no_shared,Hier16x64 d=.03 (5s),halfcheetah,5,5886.6,370.11546846896306
+no_shared,Hier16x64 d=.03 (5s),hopper,5,3211.8,326.71721717717907
+no_shared,Hier16x64 d=.03 (5s),humanoid,5,6001.6,144.6753607218589
+no_shared,Hier16x64 d=.03 (5s),humanoidstandup,5,161160.0,1423.2357499725756
+no_shared,Hier16x64 d=.03 (5s),swimmer,5,185.45999999999998,32.986203176479705
+no_shared,Hier16x64 d=.03 (5s),walker2d,5,4187.2,269.2636997443213

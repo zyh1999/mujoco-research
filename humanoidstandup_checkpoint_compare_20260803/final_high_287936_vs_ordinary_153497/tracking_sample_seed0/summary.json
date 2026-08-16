@@ -1,0 +1,44 @@
+{
+  "environment": "HumanoidStandup-v4 direct replay",
+  "seed": 0,
+  "episodes": 1,
+  "action_mode": "sample",
+  "action_seed": 0,
+  "high_checkpoint": "/net/scratch/h99859yz/rat_default_shared_csf3/scratch/humanoidstandup_checkpoint_compare_20260803/final_high_287936_vs_ordinary_153497/high_287936_seed0.ckpt",
+  "ordinary_checkpoint": "/net/scratch/h99859yz/rat_default_shared_csf3/scratch/humanoidstandup_checkpoint_compare_20260803/final_high_287936_vs_ordinary_153497/ordinary_153497.ckpt",
+  "high": {
+    "steps": 1000,
+    "reward_sum": 279773.60605325724,
+    "episode_returns": [
+      279773.60605325707
+    ],
+    "action_rms": 0.2751638889312744,
+    "action_abs_mean": 0.24860058724880219,
+    "action_abs_max": 0.39995771646499634,
+    "action_saturation_fraction": 0.02658823529411765,
+    "episode_max_heights": [
+      1.2104956445032056
+    ],
+    "episode_final_heights": [
+      1.1271904230728347
+    ]
+  },
+  "ordinary": {
+    "steps": 1000,
+    "reward_sum": 154905.66254212125,
+    "episode_returns": [
+      154905.66254212114
+    ],
+    "action_rms": 0.26075661182403564,
+    "action_abs_mean": 0.2313171625137329,
+    "action_abs_max": 0.3999648690223694,
+    "action_saturation_fraction": 0.023294117647058823,
+    "episode_max_heights": [
+      0.48324339991680787
+    ],
+    "episode_final_heights": [
+      0.46546169401567333
+    ]
+  },
+  "paired_video_layout": "high policy left; ordinary policy right"
+}

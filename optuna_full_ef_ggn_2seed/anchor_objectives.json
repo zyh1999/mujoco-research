@@ -1,0 +1,54 @@
+{
+  "l2_c05_m0": {
+    "params": {"clip_mode": "l2", "clip_radius": 0.5, "momentum": 0.0},
+    "provenance": "csf3 job17491617 seeds0-1 10M last10",
+    "values": {
+      "ant": [5618.447855375, 5397.872388856],
+      "halfcheetah": [5678.171196514, 5377.622808915],
+      "hopper": [1664.747071721, 534.195407045],
+      "humanoid": [6946.882365941, 7004.399504399],
+      "humanoidstandup": [164627.567506213, 162807.663776577],
+      "swimmer": [349.73427124, 303.437791025],
+      "walker2d": [5034.253058569, 4938.085365681]
+    }
+  },
+  "nosqrt_c05_m0": {
+    "params": {"clip_mode": "fvp_fisher", "clip_radius": 0.5, "momentum": 0.0},
+    "provenance": "workstation92 clip05 sweep seeds0-1 10M last10",
+    "values": {
+      "ant": [5419.27995943, 5513.739350474],
+      "halfcheetah": [5399.041054347, 5870.650412897],
+      "hopper": [2224.011510306, 3312.963845887],
+      "humanoid": [6958.133936667, 6649.717931348],
+      "humanoidstandup": [277526.044073923, 178687.788753182],
+      "swimmer": [251.537216605, 296.002834588],
+      "walker2d": [5437.15133138, 4946.315722533]
+    }
+  },
+  "fisher_c05_m0": {
+    "params": {"clip_mode": "fvp_fisher_sqrt", "clip_radius": 0.5, "momentum": 0.0},
+    "provenance": "csf3 job17793948 seeds0-1 10M last10",
+    "values": {
+      "ant": [5626.011455861, 5273.561848185],
+      "halfcheetah": [6016.864957451, 5794.762551848],
+      "hopper": [6.628315669, 36.5964173],
+      "humanoid": [6999.509589099, 7004.216771648],
+      "humanoidstandup": [325208.965175626, 163415.260778162],
+      "swimmer": [175.441506391, 276.782422354],
+      "walker2d": [4222.814917801, 4739.07066333]
+    }
+  },
+  "l2_c05_m09": {
+    "params": {"clip_mode": "l2", "clip_radius": 0.5, "momentum": 0.9},
+    "provenance": "workstation92 momentum09 seeds0-1 10M last10",
+    "values": {
+      "ant": [5204.230809593, 5379.212954831],
+      "halfcheetah": [5450.386515631, 5204.958073963],
+      "hopper": [887.34724215, 2359.56631105],
+      "humanoid": [5616.552003928, 5935.861344411],
+      "humanoidstandup": [205794.140089393, 179039.500178017],
+      "swimmer": [200.24498562, 247.76178703],
+      "walker2d": [2913.357685065, 5037.181438519]
+    }
+  }
+}

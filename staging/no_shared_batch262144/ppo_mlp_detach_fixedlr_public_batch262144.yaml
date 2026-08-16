@@ -1,0 +1,52 @@
+algo: ppo
+
+algo_config:
+  ent_coef: 0.00
+  norm_obj: adv
+  optimizer: adam
+  weight_decay: 0.0
+  lr_pi: 0.0003
+  lr_v: 0.0003
+  is_karzmarz: False
+  use_kl_adaptive_lr: False
+  pi_epochs: 4
+  pi_minibatches: 4
+  v_epochs: 4
+  v_minibatches: 4
+  with_popart: True
+  adv_type: gae
+  cliprange: 0.2
+  sigma_type: vector
+  cg_damping: 0.1
+  grad: pg
+  post_grad: fisher_clip
+  max_grad_norm: 0.5
+
+env_config:
+  env_name: hopper
+  # 1024 x 256 = 262144 rollout samples; four minibatches = 65536 each.
+  num_envs: 1024
+  nsteps: 256
+  # Use all 12 allocated CPUs without spawning one process per environment:
+  # eleven rollout workers plus the trainer process.
+  vec_env_type: grouped_subproc
+  vec_env_num_workers: 11
+  vec_env_start_method: forkserver
+  # The trainer performs floor(T / batch) + 2 updates. This value therefore
+  # yields exactly 500 complete 262144-sample rollouts.
+  timesteps_per_proc: 130_809_855
+  norm_ret: False
+
+nets_config:
+  norm_obs: True
+  type: mlp
+  a_dropout: 0.0
+  a_hidden_size: 256
+  a_num_layers: 2
+  c_hidden_size: 256
+  c_num_layers: 2
+  c_dropout: 0.0
+
+log_config:
+  log_interval: 10
+  n_eval_trials: 20

@@ -1,0 +1,176 @@
+group,method,environment,seeds,min_final_steps,max_final_steps
+shared,PPO fixed lr (5s),ant,5,9994240.0,9994240.0
+shared,PPO fixed lr (5s),halfcheetah,5,9994240.0,9994240.0
+shared,PPO fixed lr (5s),hopper,5,9994240.0,9994240.0
+shared,PPO fixed lr (5s),humanoid,5,9994240.0,9994240.0
+shared,PPO fixed lr (5s),humanoidstandup,5,9994240.0,9994240.0
+shared,PPO fixed lr (5s),swimmer,5,9994240.0,9994240.0
+shared,PPO fixed lr (5s),walker2d,5,9994240.0,9994240.0
+shared,RAT EF+GGN tuned (5s),ant,5,9994240.0,9994240.0
+shared,RAT EF+GGN tuned (5s),halfcheetah,5,9994240.0,9994240.0
+shared,RAT EF+GGN tuned (5s),hopper,5,9994240.0,9994240.0
+shared,RAT EF+GGN tuned (5s),humanoid,5,9994240.0,9994240.0
+shared,RAT EF+GGN tuned (5s),humanoidstandup,5,9994240.0,9994240.0
+shared,RAT EF+GGN tuned (5s),swimmer,5,9994240.0,9994240.0
+shared,RAT EF+GGN tuned (5s),walker2d,5,9994240.0,9994240.0
+shared,Exact-RAT d=.03 (5s),ant,5,9990000.0,9990000.0
+shared,Exact-RAT d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Exact-RAT d=.03 (5s),hopper,5,9990000.0,9990000.0
+shared,Exact-RAT d=.03 (5s),humanoid,5,9990000.0,9990000.0
+shared,Exact-RAT d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Exact-RAT d=.03 (5s),swimmer,5,9990000.0,9990000.0
+shared,Exact-RAT d=.03 (5s),walker2d,5,9990000.0,9990000.0
+shared,Exact-RAT d=.1 (5s),ant,5,9990000.0,9990000.0
+shared,Exact-RAT d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Exact-RAT d=.1 (5s),hopper,5,9990000.0,9990000.0
+shared,Exact-RAT d=.1 (5s),humanoid,5,9990000.0,9990000.0
+shared,Exact-RAT d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Exact-RAT d=.1 (5s),swimmer,5,9990000.0,9990000.0
+shared,Exact-RAT d=.1 (5s),walker2d,5,9990000.0,9990000.0
+shared,Curv256 d=.03 (5s),ant,5,9990000.0,9990000.0
+shared,Curv256 d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Curv256 d=.03 (5s),hopper,5,9990000.0,9990000.0
+shared,Curv256 d=.03 (5s),humanoid,5,9990000.0,9990000.0
+shared,Curv256 d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Curv256 d=.03 (5s),swimmer,5,9990000.0,9990000.0
+shared,Curv256 d=.03 (5s),walker2d,5,9990000.0,9990000.0
+shared,Curv256 d=.1 (5s),ant,5,9990000.0,9990000.0
+shared,Curv256 d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Curv256 d=.1 (5s),hopper,5,9990000.0,9990000.0
+shared,Curv256 d=.1 (5s),humanoid,5,9990000.0,9990000.0
+shared,Curv256 d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Curv256 d=.1 (5s),swimmer,5,9990000.0,9990000.0
+shared,Curv256 d=.1 (5s),walker2d,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.03 (5s),ant,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.03 (5s),hopper,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.03 (5s),humanoid,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.03 (5s),swimmer,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.03 (5s),walker2d,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.1 (5s),ant,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.1 (5s),hopper,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.1 (5s),humanoid,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.1 (5s),swimmer,5,9990000.0,9990000.0
+shared,Energy-free255+1 d=.1 (5s),walker2d,5,9990000.0,9990000.0
+shared,Curv256 VF=4.0 (3s),ant,3,9990000.0,9990000.0
+shared,Curv256 VF=4.0 (3s),halfcheetah,3,9990000.0,9990000.0
+shared,Curv256 VF=4.0 (3s),hopper,3,9990000.0,9990000.0
+shared,Curv256 VF=4.0 (3s),humanoid,3,9990000.0,9990000.0
+shared,Curv256 VF=4.0 (3s),humanoidstandup,3,9990000.0,9990000.0
+shared,Curv256 VF=4.0 (3s),swimmer,3,9990000.0,9990000.0
+shared,Curv256 VF=4.0 (3s),walker2d,3,9990000.0,9990000.0
+shared,Energy-free VF=1.5 (3s),ant,3,9990000.0,9990000.0
+shared,Energy-free VF=1.5 (3s),halfcheetah,3,9990000.0,9990000.0
+shared,Energy-free VF=1.5 (3s),hopper,3,9990000.0,9990000.0
+shared,Energy-free VF=1.5 (3s),humanoid,3,9990000.0,9990000.0
+shared,Energy-free VF=1.5 (3s),humanoidstandup,3,9990000.0,9990000.0
+shared,Energy-free VF=1.5 (3s),swimmer,3,9990000.0,9990000.0
+shared,Energy-free VF=1.5 (3s),walker2d,3,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.03 (5s),ant,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.03 (5s),hopper,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.03 (5s),humanoid,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.03 (5s),swimmer,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.03 (5s),walker2d,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.1 (5s),ant,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.1 (5s),hopper,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.1 (5s),humanoid,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.1 (5s),swimmer,5,9990000.0,9990000.0
+shared,Grouped-rho4 legacy d=.1 (5s),walker2d,5,9990000.0,9990000.0
+shared,Grouped-rho4 aligned d=.03 (5s),ant,5,9990000.0,9990000.0
+shared,Grouped-rho4 aligned d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+shared,Grouped-rho4 aligned d=.03 (5s),hopper,5,9990000.0,9990000.0
+shared,Grouped-rho4 aligned d=.03 (5s),humanoid,5,9990000.0,9990000.0
+shared,Grouped-rho4 aligned d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+shared,Grouped-rho4 aligned d=.03 (5s),swimmer,5,9990000.0,9990000.0
+shared,Grouped-rho4 aligned d=.03 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,PPO fixed lr (5s),ant,5,9994240.0,9994240.0
+no_shared,PPO fixed lr (5s),halfcheetah,5,9994240.0,9994240.0
+no_shared,PPO fixed lr (5s),hopper,5,9994240.0,9994240.0
+no_shared,PPO fixed lr (5s),humanoid,5,9994240.0,9994240.0
+no_shared,PPO fixed lr (5s),humanoidstandup,5,9994240.0,9994240.0
+no_shared,PPO fixed lr (5s),swimmer,5,9994240.0,9994240.0
+no_shared,PPO fixed lr (5s),walker2d,5,9994240.0,9994240.0
+no_shared,RAT EF+GGN tuned (5s),ant,5,9994240.0,9994240.0
+no_shared,RAT EF+GGN tuned (5s),halfcheetah,5,9994240.0,9994240.0
+no_shared,RAT EF+GGN tuned (5s),hopper,5,9994240.0,9994240.0
+no_shared,RAT EF+GGN tuned (5s),humanoid,5,9994240.0,9994240.0
+no_shared,RAT EF+GGN tuned (5s),humanoidstandup,5,9994240.0,9994240.0
+no_shared,RAT EF+GGN tuned (5s),swimmer,5,9994240.0,9994240.0
+no_shared,RAT EF+GGN tuned (5s),walker2d,5,9994240.0,9994240.0
+no_shared,Exact-RAT d=.03 (5s),ant,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.03 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.03 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.03 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.03 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.1 (5s),ant,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.1 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.1 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.1 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Exact-RAT d=.1 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Curv256 d=.03 (5s),ant,5,9990000.0,9990000.0
+no_shared,Curv256 d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Curv256 d=.03 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Curv256 d=.03 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Curv256 d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Curv256 d=.03 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Curv256 d=.03 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Curv256 d=.1 (5s),ant,5,9990000.0,9990000.0
+no_shared,Curv256 d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Curv256 d=.1 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Curv256 d=.1 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Curv256 d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Curv256 d=.1 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Curv256 d=.1 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.03 (5s),ant,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.03 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.03 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.03 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.03 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.1 (5s),ant,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.1 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.1 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.1 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Energy-free255+1 d=.1 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.03 (5s),ant,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.03 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.03 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.03 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.03 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.1 (5s),ant,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.1 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.1 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.1 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.1 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.1 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 legacy d=.1 (5s),walker2d,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 aligned d=.03 (5s),ant,5,9994240.0,9994240.0
+no_shared,Grouped-rho4 aligned d=.03 (5s),halfcheetah,5,9994240.0,9994240.0
+no_shared,Grouped-rho4 aligned d=.03 (5s),hopper,5,9994240.0,9994240.0
+no_shared,Grouped-rho4 aligned d=.03 (5s),humanoid,5,9994240.0,9994240.0
+no_shared,Grouped-rho4 aligned d=.03 (5s),humanoidstandup,5,9994240.0,9994240.0
+no_shared,Grouped-rho4 aligned d=.03 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Grouped-rho4 aligned d=.03 (5s),walker2d,5,9994240.0,9994240.0
+no_shared,Hier16x64 d=.03 (5s),ant,5,9990000.0,9990000.0
+no_shared,Hier16x64 d=.03 (5s),halfcheetah,5,9990000.0,9990000.0
+no_shared,Hier16x64 d=.03 (5s),hopper,5,9990000.0,9990000.0
+no_shared,Hier16x64 d=.03 (5s),humanoid,5,9990000.0,9990000.0
+no_shared,Hier16x64 d=.03 (5s),humanoidstandup,5,9990000.0,9990000.0
+no_shared,Hier16x64 d=.03 (5s),swimmer,5,9990000.0,9990000.0
+no_shared,Hier16x64 d=.03 (5s),walker2d,5,9990000.0,9990000.0

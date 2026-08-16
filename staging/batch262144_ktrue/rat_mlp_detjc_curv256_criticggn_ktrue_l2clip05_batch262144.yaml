@@ -1,0 +1,63 @@
+algo: rat
+
+algo_config:
+  ent_coef: 0.00
+  norm_obj: adv
+  optimizer: sgd
+  lr_pi: 0.05
+  lr_v: 0.1
+  use_kl_adaptive_lr: True
+  is_karzmarz: True
+  pi_epochs: 4
+  pi_minibatches: 4
+  v_epochs: 4
+  v_minibatches: 4
+  with_popart: True
+  adv_type: gae
+  clamp_ratio: True
+  max_ratio: 10.0
+  min_ratio: 0.1
+  sigma_type: vector
+  cg_damping: 0.03
+  fisher_kernel: exact
+  sketch_dim: 32768
+  sketch_seed: 0
+  sketch_diagonal_mode: z_only
+  fisher_kernel_normalization: none
+  fisher_kernel_normalization_eps: 1.0e-12
+  grad: npg
+  post_grad: fisher_clip
+  max_grad_norm: 0.5
+  actor_curvature_subsample: 256
+  critic_curvature_subsample: 256
+  actor_subsample_full_batch_gradient: False
+  critic_update: gn
+  critic_optimizer: sgd
+
+env_config:
+  env_name: hopper
+  # 1024 x 256 = 262144 rollout samples; four minibatches = 65536 each.
+  num_envs: 1024
+  nsteps: 256
+  # Use all 12 allocated CPUs without spawning one process per environment:
+  # eleven rollout workers plus the trainer process.
+  vec_env_type: grouped_subproc
+  vec_env_num_workers: 11
+  vec_env_start_method: forkserver
+  # floor(T / 262144) + 2 = 500 formal updates.
+  timesteps_per_proc: 130_809_855
+  norm_ret: False
+
+nets_config:
+  norm_obs: True
+  type: mlp
+  a_dropout: 0.0
+  a_hidden_size: 256
+  a_num_layers: 2
+  c_hidden_size: 256
+  c_num_layers: 2
+  c_dropout: 0.0
+
+log_config:
+  log_interval: 10
+  n_eval_trials: 20

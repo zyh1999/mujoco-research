@@ -1,0 +1,30 @@
+{
+  "environment": "HumanoidStandup-v4 direct MuJoCo replay",
+  "seed": 0,
+  "deterministic_policy": "mean action",
+  "high_checkpoint": "/net/scratch/h99859yz/rat_default_shared_csf3/scratch/humanoidstandup_checkpoint_compare_20260803/high_194959.ckpt",
+  "ordinary_checkpoint": "/net/scratch/h99859yz/rat_default_shared_csf3/scratch/humanoidstandup_checkpoint_compare_20260803/ordinary_153497.ckpt",
+  "high": {
+    "steps": 300,
+    "reward_sum": 234.32888530330558,
+    "episode_returns": [
+      234.32888530330558
+    ],
+    "action_rms": 0.34629154205322266,
+    "action_abs_mean": 0.3316785395145416,
+    "action_abs_max": 0.4000000059604645,
+    "action_saturation_fraction": 0.0
+  },
+  "ordinary": {
+    "steps": 300,
+    "reward_sum": 216.11336861189199,
+    "episode_returns": [
+      216.11336861189227
+    ],
+    "action_rms": 0.3945053815841675,
+    "action_abs_mean": 0.39400023221969604,
+    "action_abs_max": 0.4000000059604645,
+    "action_saturation_fraction": 0.0
+  },
+  "paired_video_layout": "high policy left; ordinary policy right"
+}

@@ -1,0 +1,49 @@
+algo: ppo
+
+algo_config:
+  ent_coef: 0.00
+  norm_obj: adv
+  optimizer: adam
+  weight_decay: 0.0
+  lr_pi: 0.0003
+  lr_v: 0.0003
+  is_karzmarz: False
+  use_kl_adaptive_lr: False
+  pi_epochs: 4
+  pi_minibatches: 8
+  v_epochs: 4
+  v_minibatches: 8
+  with_popart: True
+  adv_type: gae
+  cliprange: 0.2
+  sigma_type: vector
+  cg_damping: 0.1
+  grad: pg
+  post_grad: l2_clip
+  max_grad_norm: 0.5
+
+env_config:
+  env_name: hopper
+  num_envs: 32
+  nsteps: 256
+  timesteps_per_proc: 10_000_000
+  norm_ret: False
+
+nets_config:
+  norm_obs: True
+  type: transformer
+  a_dropout: 0.0
+  a_hidden_size: 64
+  a_num_layers: 1
+  c_hidden_size: 64
+  c_num_layers: 1
+  c_dropout: 0.0
+  transformer_num_layers: 1
+  transformer_num_heads: 4
+  transformer_ff_multiplier: 2
+  transformer_tokenization: mujoco_body
+  transformer_layer_norm_eps: 1.0e-5
+
+log_config:
+  log_interval: 10
+  n_eval_trials: 20

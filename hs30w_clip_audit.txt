@@ -1,0 +1,18 @@
+The active HumanoidStandup seed-0 run has algo=adv and selects
+Advantage_ActorUpdate. In this function, `post_grad` is not read.
+
+Actor update actually applied:
+  torch.nn.utils.clip_grad_norm_(params_pi, algo_config.max_grad_norm)
+  max_grad_norm = 0.5
+
+`post_grad=fisher_clip` is implemented only in NPG_ActorUpdate, which this
+algo=adv run does not dispatch to. It must not be described as Fisher-norm
+clipping.
+
+Critic update:
+  Adam(actor_critic.v_net.parameters(), lr=0.001)
+  MSE loss, 4 epochs x 8 minibatches, PopArt
+  torch.nn.utils.clip_grad_norm_(actor_critic.v_net.parameters(), 5.0)
+
+Woodbury-CG-40 is used only to transform the actor-side per-sample advantage
+or preconditioner RHS. No critic CG or critic Fisher/GGN solve is used.
