@@ -21,11 +21,11 @@ Set up the planner-executor infrastructure only. No research task was started.
 ## Git
 
 - Infrastructure commit: `f5028e4fc12619057e92dfa7baf35ff96817f616`
-- Push: blocked; no Git remote is configured in this repository.
+- Remote target: `git@github.com:zyh1999/mujoco-research.git`.
+- Push target: public GitHub repository, branch `agent-work`.
 
 ## Planner action required
 
-Provide or approve the GitHub remote URL/repository so `agent-work` can be
-pushed. Replace `TASK.md` only when a bounded research task is ready.
+Replace `TASK.md` only when a bounded research task is ready.
 
-NEED_DECISION
+TASK_COMPLETE
