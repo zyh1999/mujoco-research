@@ -141,8 +141,9 @@ evaluated for applicability only; no stop was executed.
 - Changed only `.agent/STATE.md` and `.agent/AGENT_REPORT.md`.
 - No experiment, code, config, environment, artifact, scheduler or process was
   changed.
-- Evidence commit: `TO_BE_FILLED_AFTER_COMMIT`
+- Evidence commit: `a5794e7939ca6c0bb6bb3a9af092b04983d26af7`
 - Push target: `origin/agent-work`
-- Final worktree/push verification: `TO_BE_FILLED_AFTER_PUSH`
+- Final worktree/push verification: recorded by the follow-up delivery commit;
+  `origin/agent-work` is verified after push.
 
 TASK_COMPLETE
