@@ -1,0 +1,35 @@
+FROM rlstack5060/mujoco-rat:cu128
+
+# Swimmer-v3 is the only Gymnasium 1.0 MuJoCo task in the matched matrix that
+# still requires the deprecated mujoco-py backend.  Keep this compatibility
+# layer isolated from the shared RAT image and pin every added Python package.
+ARG MUJOCO210_URL=https://github.com/google-deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        libgl1-mesa-dev \
+        libglew-dev \
+        libglfw3 \
+        libglfw3-dev \
+        libosmesa6-dev \
+        patchelf \
+    && mkdir -p /opt/mujoco \
+    && curl -fsSL "$MUJOCO210_URL" -o /tmp/mujoco210.tar.gz \
+    && tar -xzf /tmp/mujoco210.tar.gz -C /opt/mujoco \
+    && python -m pip install --no-cache-dir \
+        Cython==0.29.37 \
+        mujoco-py==2.1.2.14 \
+    && ln -s cpython/longintrepr.h /opt/conda/include/python3.11/longintrepr.h \
+    && rm -f /opt/conda/lib/python3.11/site-packages/mujoco_py/cymj.c \
+    && touch /opt/conda/lib/python3.11/site-packages/mujoco_py/cymj.pyx \
+    && MUJOCO_PY_MUJOCO_PATH=/opt/mujoco/mujoco210 \
+       LD_LIBRARY_PATH=/opt/mujoco/mujoco210/bin:/usr/lib/x86_64-linux-gnu \
+       MUJOCO_PY_FORCE_CPU=1 \
+       python -c 'import mujoco_py' \
+    && rm -f /tmp/mujoco210.tar.gz \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV MUJOCO_PY_MUJOCO_PATH=/opt/mujoco/mujoco210 \
+    LD_LIBRARY_PATH=/opt/mujoco/mujoco210/bin:/usr/local/nvidia/lib64:/usr/local/nvidia/lib:/usr/lib/x86_64-linux-gnu
