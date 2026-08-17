@@ -2,148 +2,149 @@
 
 ## Metadata
 
-- Task-ID: `MUJOCO-READONLY-REFRESH-20260817-01`
-- Inspection window: `2026-08-17T13:25:18Z` to `2026-08-17T13:37:04Z`
-- Branch: `agent-work`
-- Inspected local/remote HEAD: `7c2356880b863a4f32701207d52021b743ca7694`
-- Starting worktree: clean
-- Control plane: CSF3 `login1.csf3.man.alces.network`
-- Directly inspected: CSF3; dual-5060 `47.114.81.212:60023`
-- Bede: attempted, denied noninteractive authentication
-- Explicitly excluded: `.54`, `10.49.7.54`, `ws4090-31`
+- Task-ID: `MUJOCO-DUAL5060-SWIMMER-RERUN-20260817-03`
+- Execution window: `2026-08-17T13:52:35Z` to `2026-08-17T16:10:09Z`
+- Starting HEAD: `7639d44200bb9539ddeadb32444a6e9d8f237a07`
+- Evidence commit: `70edbbd27761ce5d2826b58995b0b6b2a2de5682`
+- Branch/target: source state `agent-work`; push target `origin/agent-work`
+- Formal source commit: `df9d5e18279d096218a923ad5d4df37c35fdca68`
+- Formal run root:
+  `/home/zzz/rlstack5060/workspaces/perf_runs/global7env_selected10m_5060_20260816_swimmerv3_rerun_20260817`
+- Original immutable root:
+  `/home/zzz/rlstack5060/workspaces/perf_runs/global7env_selected10m_5060_20260816`
 
-## Agent-file reconciliation
+## Refreshed live state
 
-| File | SHA256 before update | Finding |
+| Plane | Pre-run evidence | Post-run evidence |
 |---|---|---|
-| `.agent/GOAL.md` | `4e1cf39f1b363d9a1ffbf38c64a2013e89240617428e5826b3fa59239609d7b7` | Preserve M1 and M2 as separate matched lines |
-| `.agent/STATE.md` | `ec01016a5bbf3b17a234c5063c9f8eba97b51f29b65cabd2ed7e8e373d26ee49` | Dual-5060/Bede handoff status was stale |
-| `.agent/TASK.md` | `119e57ea98e6859867337584e03a1b3bb62512225f655e6be4e0d75d1a1a0649` | `READY`, read-only refresh |
-| `.agent/AGENT_REPORT.md` | `55091f772f5fd4adeacfffc88b255b1400e0330c5419980bdada7970f65f0e20` | Prior report only described infrastructure setup |
+| CSF3 | no running/pending MuJoCo job at `13:52:35Z` | no MuJoCo action taken |
+| Bede | direct login restored; `1072326_0-17` scheduler-complete | exact cell-to-artifact mapping still unverified; no scientific completion claim |
+| dual-5060 | GPUs 0/1: 0%, 33/15 MiB; no trainer/container; 335 GiB free | GPUs 0/1: 0%, 33/15 MiB; no trainer/container; disk 29% used |
+| selected batch | original 30 `FINISHED`, five Swimmer-v3 `FAILED` | original unchanged; five linked reruns `FINISHED`, bundle `rc=0` |
 
-## Research-line definitions and matching
+No `.54` / `ws4090-31` access occurred. No Jupyter session was created or
+found, so the one-hour idle-Jupyter rule had no target.
 
-| Line | Methods | Environments/budget | Strict matching boundary |
-|---|---|---|---|
-| M1 large-batch | Curv256/critic-GGN256, K-true/K-opt, EF255+1, FullEmp/FullGGN | seven MuJoCo tasks; about 500 full updates; accepted terminal boundary 128,450,560 | environment/version, MLP architecture, seed, rollout/minibatch, exact Fisher/GGN and clip semantics, damping/momentum, terminal artifacts, last-10 convention |
-| M2 small-batch no-shared Transformer | PPO, K-FAC, Emp256, EF255+1, FullEmp | Ant, HalfCheetah, Hopper, Walker2d, Humanoid, HumanoidStandup, Swimmer-v3; selected batch nominal 10M | environment/version, no-shared Transformer, seed, budget, old-policy/KL semantics, curvature subset, damping/momentum and evaluation convention |
+## Immutable five-cell launch table
 
-Rows without exact source/config/provenance mapping are `unverifiable`, not
-silently matched. Cross-environment decisions must not use Hopper alone.
+All formal rows are M2 no-shared single-layer Transformer cells with
+Swimmer-v3, 10,000,000 requested timesteps / 9,994,240 expected logged steps,
+rollout 8,192, actor/critic 4 epochs x 8 minibatches, momentum 0.5/0.5,
+damping 0.10, `fisher_l2`, max norm 0.5 and KL target 0.008.
 
-## Live inventory
+| Line | Method | Seed | GPU | Trainer | Config | Original and linked output suffix |
+|---|---|---:|---:|---|---|---|
+| M2 | Emp256 | 2 | 0 | `train_detach_jointcritic_actor_fvp_fisherclip_curvsub.py` | `rat_transformer_detjc_emp256_ggn256.yaml` | `emp256_mom0.5_d0.10_fisher_l2_kl008_10m/emp256/swimmer/seed2` |
+| M2 | EF255+1 | 1 | 0 | `train_detach_energyfree255p1_criticggn256_batch262144.py` | `rat_transformer_detjc_energyfree255p1_ggn256.yaml` | `energyfree255p1_mom0.5_d0.10_fisher_l2_kl008_10m/energyfree255p1/swimmer/seed1` |
+| M2 | EF255+1 | 6 | 1 | same EF255+1 trainer | same EF255+1 config | `energyfree255p1_mom0.5_d0.10_fisher_l2_kl008_10m/energyfree255p1/swimmer/seed6` |
+| M2 | FullEmp | 0 | 0 | `train_detach_jointcritic_actor_fisherclip.py` | `rat_transformer_detjc_full_emp_full_ggn.yaml` | `fullemp_mom0.5_d0.10_fisher_l2_kl008_10m/fullemp/swimmer/seed0` |
+| M2 | FullEmp | 5 | 1 | same FullEmp trainer | same FullEmp config | `fullemp_mom0.5_d0.10_fisher_l2_kl008_10m/fullemp/swimmer/seed5` |
 
-### Scheduler and processes
+The executed launcher SHA256 was
+`939d7c4a82a54b074c6100dcb28b2c0ccf516d8a9afee50ddb38f91dff4fb3b0`.
+The committed version additionally refuses a duplicate launch whenever a
+formal status file already exists. Original failure files were never
+overwritten.
 
-| Host | Job/run | Fresh state | Classification/evidence |
-|---|---|---|---|
-| CSF3 | current MuJoCo jobs | none running or pending | fresh `squeue` and owned-process scan |
-| CSF3 | `18302268_0-9,11-41` | historical terminal | completed-valid at accounting level; exact per-cell artifact table is prior evidence |
-| CSF3 | `18302268_10` | FAILED after 57m48s | unknown failure; exact cell/root/cause absent; preserved |
-| Bede | `1072326_0-17`, `tf-g7-10m` | all 18 scheduler-COMPLETED, 2h28m05s-10h41m04s | scientific artifacts unknown because direct login was denied |
-| dual-5060 | selected 10M batch | no live worker; 30 FINISHED, 5 FAILED | direct status/rc/log/CSV inspection at `13:32Z-13:36Z` |
-| dual-5060 | GPUs 0/1 | RTX 5060 Ti, 0%, 33/15 MiB of 16311 MiB | no MuJoCo PID; currently idle telemetry |
+## Dependency repair and rollback
 
-No new Jupyter session was created. No current MuJoCo Jupyter process/job was
-found, so the one-hour idle-cancellation rule has no current target.
+Root cause was not algorithmic: Gymnasium 1.0 dispatches Swimmer-v3 through
+deprecated `mujoco_py`, which was absent from the shared Python 3.11 image.
+The first isolated preflight then exposed the archived wheel's stale generated
+C code. The final isolated fix used:
 
-### Dual-5060 run root and provenance
+- base image ID
+  `8c26347d1f50c73192c1fff666a8cc14ca7319f3f78588d878aba0b5c9b7217b`;
+- MuJoCo `2.1.0` binaries and `mujoco-py==2.1.2.14`;
+- `Cython==0.29.37` and `fasteners==0.20`;
+- pinned Ubuntu GL/GLFW/GLEW/OSMesa development/runtime packages plus
+  `patchelf`;
+- a Python-3.11 header compatibility link and regeneration of `cymj.c` from
+  the package's own `cymj.pyx` with pinned Cython.
 
-Root:
-`/home/zzz/rlstack5060/workspaces/perf_runs/global7env_selected10m_5060_20260816`
+The shared base was unchanged. Rollback is removal of only
+`rlstack5060/mujoco-rat-swimmerv3:cu128`. Exact Python and system package diffs
+are preserved in `evidence/package_diff.txt` under the rerun root.
 
-The batch has eight worker task files and 35 terminal status files. Each valid
-run includes native `progress.csv`, `stdout.log`, `stderr.log`, `time.json`,
-`status=FINISHED`, and `rc=0`. All finished rows terminate at 9,994,240 logged
-steps. Values below are the final native `eprewmean` and `kl`; `kl` semantics
-must remain source-defined and are not relabeled as fixed-behavior KL.
+## Preflight
 
-| Method | Environment | Seed | Steps | Final reward | Final KL | Class |
-|---|---|---:|---:|---:|---:|---|
-| Emp256 | Ant | 1 | 9,994,240 | 3900.77 | 0.00814 | completed-valid |
-| Emp256 | Ant | 6 | 9,994,240 | 2172.87 | 0.01592 | completed-valid |
-| Emp256 | HalfCheetah | 2 | 9,994,240 | 7438.86 | 0.00419 | completed-valid |
-| Emp256 | Hopper | 1 | 9,994,240 | 2421.38 | 0.00736 | completed-valid |
-| Emp256 | Hopper | 6 | 9,994,240 | 225.83 | 0.00926 | completed-valid |
-| Emp256 | Humanoid | 1 | 9,994,240 | 5323.67 | 0.00843 | completed-valid |
-| Emp256 | Humanoid | 6 | 9,994,240 | 5697.98 | 0.00859 | completed-valid |
-| Emp256 | HumanoidStandup | 1 | 9,994,240 | 215735.68 | 0.02297 | completed-valid |
-| Emp256 | HumanoidStandup | 6 | 9,994,240 | 215849.72 | 0.00389 | completed-valid |
-| Emp256 | Walker2d | 0 | 9,994,240 | 3378.36 | 0.00562 | completed-valid |
-| Emp256 | Walker2d | 5 | 9,994,240 | 473.48 | 0.00940 | completed-valid |
-| EF255+1 | Ant | 1 | 9,994,240 | 2100.79 | 0.01357 | completed-valid |
-| EF255+1 | Ant | 6 | 9,994,240 | 1739.97 | 0.01295 | completed-valid |
-| EF255+1 | HalfCheetah | 2 | 9,994,240 | 5061.53 | 0.00563 | completed-valid |
-| EF255+1 | Hopper | 0 | 9,994,240 | 996.76 | 0.01038 | completed-valid |
-| EF255+1 | Hopper | 5 | 9,994,240 | 487.19 | 0.01194 | completed-valid |
-| EF255+1 | Humanoid | 2 | 9,994,240 | 5361.66 | 0.00702 | completed-valid |
-| EF255+1 | HumanoidStandup | 2 | 9,994,240 | 164456.45 | 0.00954 | completed-valid |
-| EF255+1 | Walker2d | 0 | 9,994,240 | 3572.14 | 0.00744 | completed-valid |
-| EF255+1 | Walker2d | 5 | 9,994,240 | 4568.56 | 0.00579 | completed-valid |
-| FullEmp | Ant | 1 | 9,994,240 | 4411.46 | 0.00837 | completed-valid |
-| FullEmp | Ant | 6 | 9,994,240 | 5221.72 | 0.00953 | completed-valid |
-| FullEmp | HalfCheetah | 2 | 9,994,240 | 6801.55 | 0.00649 | completed-valid |
-| FullEmp | Hopper | 2 | 9,994,240 | 372.71 | 0.00381 | completed-valid |
-| FullEmp | Humanoid | 0 | 9,994,240 | 4958.05 | 0.00471 | completed-valid |
-| FullEmp | Humanoid | 5 | 9,994,240 | 5944.58 | 0.01346 | completed-valid |
-| FullEmp | HumanoidStandup | 0 | 9,994,240 | 240802.64 | 0.01179 | completed-valid |
-| FullEmp | HumanoidStandup | 5 | 9,994,240 | 234459.98 | 0.00953 | completed-valid |
-| FullEmp | Walker2d | 0 | 9,994,240 | 3238.64 | 0.00617 | completed-valid |
-| FullEmp | Walker2d | 5 | 9,994,240 | 4244.70 | 0.01182 | completed-valid |
+- Environment smoke: Python 3.11.12, Gymnasium 1.0.0, `mujoco-py 2.1.2.14`;
+  reset returned `(obs, info)`, observation `(8,)`, action `(2,)`, step API
+  length 5, then `ENV_SMOKE_OK`.
+- M1 constructor-only smoke: MLP config, value `(1,)`, policy `(1,4)`, 136,968
+  parameters, `optimizer_constructed=false`, `learning_steps=0`.
+- M2 constructor-only smoke: Transformer config, value `(1,)`, policy `(1,4)`,
+  71,752 parameters, `optimizer_constructed=false`, `learning_steps=0`.
+- A quarantined attempt showed that the trainer's nominal zero-timestep input
+  still enters its floor-plus-two update loop. It was interrupted during the
+  second update, never used as a formal cell, and replaced by the verified
+  constructor-only diagnostic. Evidence is retained in
+  `preflight/m1/zero_timestep_incident.txt`.
 
-### Failed selected-10M rows
+## Terminal formal results
 
-| Method | Environment | Seed | Progress | Classification | Exact reason |
-|---|---|---:|---|---|---|
-| Emp256 | Swimmer-v3 | 2 | no training row | failed-infrastructure | missing deprecated `mujoco_py` |
-| EF255+1 | Swimmer-v3 | 1 | no training row | failed-infrastructure | missing deprecated `mujoco_py` |
-| EF255+1 | Swimmer-v3 | 6 | no training row | failed-infrastructure | missing deprecated `mujoco_py` |
-| FullEmp | Swimmer-v3 | 0 | no training row | failed-infrastructure | missing deprecated `mujoco_py` |
-| FullEmp | Swimmer-v3 | 5 | no training row | failed-infrastructure | missing deprecated `mujoco_py` |
+The native values below are the final `progress.csv` row at update 1,219.
+`kl` is retained with its source-defined semantics.
 
-Every stderr ends with
-`gymnasium.error.DependencyNotInstalled: No module named 'mujoco_py'` from
-`gymnasium.envs.mujoco.swimmer_v3`. This is a version/environment packaging
-failure, not evidence about any optimizer.
+| Method | Seed | Status | RC | Steps | Final reward | Final KL | GPU | Elapsed s |
+|---|---:|---|---:|---:|---:|---:|---:|---:|
+| Emp256 | 2 | completed-valid | 0 | 9,994,240 | 272.9407 | 0.0034261 | 0 | 6,145.94 |
+| EF255+1 | 1 | completed-valid | 0 | 9,994,240 | 5.8639 | 0.0179583 | 0 | 6,986.26 |
+| EF255+1 | 6 | completed-valid | 0 | 9,994,240 | 24.3793 | 0.0588235 | 1 | 6,860.62 |
+| FullEmp | 0 | completed-valid | 0 | 9,994,240 | 15.0778 | 0.0049545 | 0 | 6,468.20 |
+| FullEmp | 5 | completed-valid | 0 | 9,994,240 | 59.1063 | 0.0025145 | 1 | 6,320.29 |
 
-## Historical failure accounting
+Each row has fresh `run_info.txt`, `stdout.log`, `stderr.log`, native
+`progress.csv`, TensorBoard events, `rc`, `status` and `finished_at.txt`.
+Terminal progress mtimes range from `2026-08-17T23:55:11+08:00` through
+`2026-08-18T00:09:12+08:00`.
 
-- Algorithmic: none newly established in this read-only cycle.
-- Numerical: none newly established; no terminal NaN/Inf/OOM signature found
-  in the 30 valid selected runs.
-- Infrastructure: five selected Swimmer-v3 dependency failures; prior
-  ws4090-76 EF255+1 Humanoid seed4 interruption remains preserved.
-- Unknown: `18302268_10`; Bede per-cell scientific validity; old 4090 current
-  utilization/provenance.
-- Scheduler/quota: no current MuJoCo queue row.
+## Strict matching and failure audit
 
-The low Hopper endpoints (for example Emp256 seed6 and FullEmp seed2) are not
-declared early-stop candidates because the current evidence does not provide a
-fully verified same-seed five-seed highest strict baseline. The 3/5 rule was
-evaluated for applicability only; no stop was executed.
+- Every trainer, config and `utils/mujoco_transformer.py` SHA256 matches the
+  corresponding original failed row exactly (`15/15` field checks passed).
+- Method, M2 identity, environment/version, seed, architecture, rollout,
+  epochs/minibatches, budget and all explicit optimizer/clip/KL arguments match.
+- The only intentional difference is the isolated dependency layer and linked
+  output root.
+- Formal recursive scans found no NaN/Inf, OOM, traceback, assertion,
+  `LinAlgError`, dependency, disk or permission marker.
+- Accessible Bede PPO/K-FAC Swimmer-v3 baselines have all five seeds failed for
+  missing `mujoco_py`; they are infrastructure failures, not valid scientific
+  baselines. The 3/5 early-stop-candidate comparison is therefore not
+  assessable. No run was scientifically stopped.
 
-## Contradictions and decision inputs
+Failure classification for this cycle: five historical
+`infrastructure/dependency` failures preserved; five linked reruns
+`completed-valid`; zero new algorithmic, numerical, scheduler/quota or
+infrastructure failures.
 
-- Prior STATE described eight active 3M missing-cell workers; direct inspection
-  found no worker and a newer terminal selected-10M batch.
-- Bede's old pending/running snapshot is stale; all 18 elements are now
-  scheduler-complete, but scientific completion remains unresolved.
-- The dual-5060 GPUs are genuinely idle now, but choosing Swimmer compatibility
-  repair versus another cell is a Planner research decision.
-- Highest strictly matched baseline per line cannot be recomputed from this
-  cycle alone because Bede mapping and exact selected-batch baseline cells are
-  missing. Existing M1 128,450,560 terminal artifacts remain valid by policy.
-- Sufficient evidence exists for the Planner to assign one bounded next task;
-  the Executor did not select or launch it.
+## Completeness and preserved provenance
 
-## Changes and delivery
+- Original batch: `30/35` finished, five failed records retained.
+- Successful linked recovery: `5/5`.
+- Effective valid completion count: `35/35`; historical failure count remains
+  five and is not deleted or rewritten.
+- `18302268_10` remains unresolved/unmapped.
+- Bede `1072326_0-17` remains scheduler-complete; direct access is restored but
+  exact scientific artifact mapping remains unverified.
 
-- Changed only `.agent/STATE.md` and `.agent/AGENT_REPORT.md`.
-- No experiment, code, config, environment, artifact, scheduler or process was
-  changed.
-- Evidence commit: `a5794e7939ca6c0bb6bb3a9af092b04983d26af7`
-- Push target: `origin/agent-work`
-- Final worktree/push verification: recorded by the follow-up delivery commit;
-  `origin/agent-work` is verified after push.
+## Delivery
+
+Changed files:
+
+- `.agent/STATE.md`
+- `.agent/AGENT_REPORT.md`
+- `transformer_noshared_stage/rtx5060/Dockerfile.mujoco-rat-swimmerv3`
+- `transformer_noshared_stage/rtx5060/run_swimmerv3_rerun_20260817.sh`
+- `transformer_noshared_stage/rtx5060/swimmerv3_model_init_smoke.py`
+
+Evidence commit: `70edbbd27761ce5d2826b58995b0b6b2a2de5682`.
+Push result: `origin/agent-work` updated through the evidence and report
+commits, then verified against the remote ref.
+
+The only recommended next action is a bounded read-only audit that establishes
+a valid strict five-seed M2 Swimmer-v3 baseline mapping before scientific
+interpretation of these endpoints.
 
 TASK_COMPLETE

@@ -1,43 +1,54 @@
 # Current Project State
 
-Updated: 2026-08-17T13:37:04Z
+Updated: 2026-08-17T16:10:09Z
 
 ## Established lines
 
-- M1 large-batch: Curv256 + critic GGN256, K-true/K-opt, EnergyFree255+1,
-  FullEmp/FullGGN, approximately 500 full updates / 128,450,560 transitions.
-- M2 small-batch no-shared Transformer: PPO, K-FAC, Emp256, EF255+1 and
-  FullEmp over Ant, HalfCheetah, Hopper, Walker2d, Humanoid,
-  HumanoidStandup and Swimmer-v3.
+- M1 large-batch remains Curv256 + critic GGN256, K-true/K-opt,
+  EnergyFree255+1 and FullEmp/FullGGN at the accepted terminal boundary of
+  128,450,560 transitions.
+- M2 remains the small-batch no-shared single-layer Transformer comparison of
+  PPO, K-FAC, Emp256, EF255+1 and FullEmp over seven MuJoCo environments.
+- M1 and M2 were not merged or substituted in this task. All five formal
+  Swimmer-v3 recovery cells are M2; M1 was exercised only by a zero-learning
+  compatibility/model-construction smoke test.
 
 ## Fresh distributed state
 
-- CSF3 has no running MuJoCo GPU job. Historical array `18302268_0-9,11-41`
-  remains terminal-complete; element `18302268_10` remains a preserved failure
-  whose exact cell/root/cause is unmapped.
-- Bede array `1072326_0-17` is scheduler-complete in the CSF3 controller's
-  fresh accounting snapshot. Direct Bede login failed noninteractive
-  authentication, so exact cells, rewards, KL and artifacts remain unverified.
-- The new dual-5060 endpoint `47.114.81.212:60023` is reachable and idle:
-  two RTX 5060 Ti GPUs at 0%, 33 MiB and 15 MiB; no training PID.
-- Its `global7env_selected10m_5060_20260816` batch is terminal: 30/35 runs
-  finished at 9,994,240 steps and five Swimmer-v3 runs failed before training.
-- All five failures have the same infrastructure/dependency cause:
-  `gymnasium.error.DependencyNotInstalled` because Swimmer-v3 requires
-  deprecated `mujoco_py`. They are not algorithmic or numerical failures.
-- `ws4090-92` and `ws4090-76` have only historical controller telemetry in
-  this cycle; do not infer free capacity or current process state.
-- `ws4090-31` / `10.49.7.54` remains quarantined and is zero capacity.
+- CSF3 had no running or pending MuJoCo job at `2026-08-17T13:52:35Z`.
+- Direct Bede login became available in this cycle. Array `1072326_0-17`
+  remains scheduler-complete, but its exact per-cell artifact/root mapping was
+  not reconciled, so it is not treated as scientific completion.
+- dual-5060 task `MUJOCO-DUAL5060-SWIMMER-RERUN-20260817-03` completed all five
+  authorized M2 Swimmer-v3 reruns with `rc=0` and 9,994,240 logged steps.
+- The original batch remains immutable at 30 `FINISHED` and five dependency
+  `FAILED` records. The linked quarantine root adds five completed-valid
+  records, so the effective matched batch now has 35 valid completions without
+  deleting the five historical failures.
+- The isolated compatibility image is
+  `rlstack5060/mujoco-rat-swimmerv3:cu128`, image ID
+  `f1ca97dd1d845b7ab13438f9064bbc7dd0b101a88692781170f797da1e774057`.
+  The shared base image was not modified.
+- Post-run GPUs 0/1 were idle at 33/15 MiB, with no training process or
+  container. Disk remained healthy at 29% used.
+- No Jupyter session was created or found. Quarantined `ws4090-31` / `.54` was
+  not accessed.
 
-## Evidence rules and Planner blockers
+## Evidence and unresolved provenance
 
-- A terminal 128,450,560-transition M1 run with terminal artifacts is complete;
-  nominal 130M must not cause a rerun.
-- The 5060 `progress.csv` `kl` field is preserved as the run's native logged
-  KL. Its exact reference-policy semantics require source confirmation before
-  cross-family comparison.
-- No strict five-seed baseline mapping was available for the selected 10M
-  cells, so the 3/5 early-stop rule was not applied.
-- Next planning must decide whether to repair Swimmer-v3 compatibility or to
-  prioritize another bounded missing-cell/provenance task. The Executor did
-  not make that research choice.
+- All rerun trainer/config/Transformer SHA256 values match their corresponding
+  original failed records exactly. Formal source commit is
+  `df9d5e18279d096218a923ad5d4df37c35fdca68`.
+- Accessible Bede M2 PPO and K-FAC Swimmer-v3 five-seed artifacts are themselves
+  dependency failures. There is therefore no valid highest strict Swimmer-v3
+  baseline for the 3/5 early-stop-candidate rule; no stop was applied.
+- Historical CSF3 element `18302268_10` remains unresolved and unmapped. It was
+  not guessed or reassigned.
+- Native `progress.csv` `kl` remains source-defined logged KL and is not
+  relabeled as another reference-policy convention.
+
+## Next bounded decision
+
+The only recommended next action is a Planner-authored read-only scientific
+audit that first establishes a valid strict five-seed M2 Swimmer-v3 baseline
+mapping before interpreting or ranking these five recovered endpoints.
