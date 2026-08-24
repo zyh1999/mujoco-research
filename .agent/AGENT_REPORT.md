@@ -62,21 +62,32 @@ Placement keeps both momenta for a given environment on the same host class:
 | Host | Environments | Momenta | Seeds | Current state |
 |---|---|---|---|---|
 | dual-5060 | Ant, Hopper, Swimmer, Walker2d | 0.7, 0.8 | 0,1 | running local queues |
-| dual-5060 tail | HalfCheetah, Humanoid, HumanoidStandup | 0.7, 0.8 | 0,1 | queued after primary local queues |
+| Bede | HalfCheetah, Humanoid, HumanoidStandup | 0.7, 0.8 | 0,1 | preflight passed; all six formal workers running |
 
-Bede submission was attempted twice. Both `sbatch` calls failed before job-ID
-creation with `Requested node configuration is not available`. Historical
-successful ReqTRES from `1072326` was account `bdman37g`, 32 CPUs,
-129872 MiB and one GPU. The same current request and test-only variants for
-`gpu`, typed V100, `full`, `half`, and GH partitions were rejected. A live
-audit then showed 23 idle V100 nodes and other accounts running jobs submitted
-today with the identical 1-GPU/32-CPU/129872-MiB request. The `yihe`
-associations for `bdman37`, `bdman37g`, and `hpcuser` still exist, but even a
-five-minute test-only request pinned to idle `gpu008` fails. This isolates the
-failure to current `bdman37g` GPU allocation/eligibility rather than the node
-shape, source, artifacts, or queue occupancy. Bede is therefore classified
-scheduler/account infrastructure unavailable, not scientifically failed.
-Empty evidence roots from the two rejected submissions are retained.
+Bede submission was initially attempted twice. Both `sbatch` calls failed
+before job-ID creation with `Requested node configuration is not available`.
+The root cause was isolated after restoring authenticated access: under Bede's
+current Slurm 25.11.7 `JobSubmitPlugins=lua` configuration, a one-GPU request
+must let the site derive its CPU/task topology. `--gres=gpu:1` passes and is
+automatically assigned 32 CPUs and 129872 MiB; adding only
+`--cpus-per-task=32` fails, and adding only `--ntasks=1` also fails. Explicit
+memory alone passes. Historical accounting had shown the derived ReqTRES, not
+the original submit directives, so it was not evidence that CPU and memory
+should be repeated in the script.
+
+Both Bede scripts now follow the site GPU-only template. Their SHA256 values
+are `3ea222f31f07ce8642b52774ce4ead6d968a980f92efbbb3fa2fa81c89001cd1`
+(preflight) and
+`ffa4da4c8b92e7eb22ea0d3de6d2c18f30e4b0bb2180fe743e939bec296e2ada`
+(formal). Exact-file test-only checks passed with the expected automatic 32
+CPU allocation. Retry root
+`/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_momentum0708_s2_10m_20260824_retry2`
+is non-colliding. Both preflight elements completed `0:0` in 2m12s, with
+momentum 0.7/0.8 worker statuses `FINISHED` and RC zero. Dependency released
+formal array `1074306_[0-5]`; all six workers are running across `gpu009`,
+`gpu025`, and `gpu026`, with each worker executing seeds 0 then 1. The initial
+error scan is clean. Empty evidence roots from the two rejected submissions
+are retained.
 
 ## New source and preflight
 
@@ -118,9 +129,11 @@ At the user's direction this batch will not run on CSF3. Jobs `19206549` and
 `19206550` were cancelled: preflight element `19206549_0` completed before the
 cancellation reached it, while `19206549_1` and all formal elements were
 cancelled before training. Thus no CSF3 formal cell ran. The twelve remaining
-HalfCheetah/Humanoid/HumanoidStandup formal cells are queued as a non-colliding
-dual-5060 tail (PID `19130`) which starts only after the primary two-GPU queues
-finish.
+HalfCheetah/Humanoid/HumanoidStandup formal cells are assigned to Bede jobs
+`1074304`/`1074306`. The previously queued dual-5060 tail PID `19130` was
+verified as `WAITING_FOR_PRIMARY` with no `tail_started_at.txt`, then stopped
+and marked `CANCELLED_AFTER_BEDE_RECOVERY`; the primary dual-5060 queues remain
+running.
 
 ## Preserved provenance
 

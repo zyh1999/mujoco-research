@@ -1,6 +1,6 @@
 # Current Project State
 
-Updated: 2026-08-24T13:59:00Z
+Updated: 2026-08-24T14:36:00Z
 
 ## Active bounded task
 
@@ -18,17 +18,19 @@ Updated: 2026-08-24T13:59:00Z
   runtime actor/critic momentum telemetry matched exactly. Formal Ant cells
   are running, with the remaining Ant/Hopper/Swimmer/Walker2d cells queued on
   the two local GPU workers.
-- Bede was live and writable, but both submission attempts and scheduler test
-  requests were rejected before job creation as `Requested node configuration
-  is not available`. Current jobs from other accounts prove the identical
-  1-GPU/32-CPU/129872-MiB shape is valid and 23 V100 nodes are idle. The
-  `yihe` associations still exist, so this is isolated to current `bdman37g`
-  GPU allocation/eligibility rather than code, queue occupancy, or an
-  algorithm result.
+- Bede rejection was caused by explicit task/CPU topology in the submission
+  scripts after the site's Slurm 25.11.7 upgrade, not account eligibility or
+  capacity. With `JobSubmitPlugins=lua`, `--gres=gpu:1` passes and derives 32
+  CPUs/129872 MiB; adding `--cpus-per-task=32` or even `--ntasks=1` fails.
+  Corrected exact-file test-only checks passed. Preflight `1074304_[0-1]`
+  completed `0:0`; formal `1074306_[0-5]` released and all six workers are
+  running across `gpu009`, `gpu025`, and `gpu026` with a clean initial error
+  scan.
 - At the user's direction, CSF3 jobs `19206549` and `19206550` were cancelled.
   One short preflight element completed before cancellation; no CSF3 formal
   training cell ran. The remaining HalfCheetah/Humanoid/HumanoidStandup cells
-  are queued as a tail on dual-5060 after its current four-environment queues.
+  are now assigned to Bede. The duplicate dual-5060 tail was stopped before it
+  launched any cell; the original four-environment dual-5060 queues continue.
 
 ## Previous completed state (2026-08-17)
 
