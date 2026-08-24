@@ -62,15 +62,21 @@ Placement keeps both momenta for a given environment on the same host class:
 | Host | Environments | Momenta | Seeds | Current state |
 |---|---|---|---|---|
 | dual-5060 | Ant, Hopper, Swimmer, Walker2d | 0.7, 0.8 | 0,1 | running local queues |
-| CSF3 fallback | HalfCheetah, Humanoid, HumanoidStandup | 0.7, 0.8 | 0,1 | scheduler pending |
+| dual-5060 tail | HalfCheetah, Humanoid, HumanoidStandup | 0.7, 0.8 | 0,1 | queued after primary local queues |
 
 Bede submission was attempted twice. Both `sbatch` calls failed before job-ID
 creation with `Requested node configuration is not available`. Historical
 successful ReqTRES from `1072326` was account `bdman37g`, 32 CPUs,
 129872 MiB and one GPU. The same current request and test-only variants for
-`gpu`, typed V100, `full`, `half`, and GH partitions were rejected. Bede is
-therefore classified scheduler/infrastructure unavailable, not scientifically
-failed. Empty evidence roots from the two rejected submissions are retained.
+`gpu`, typed V100, `full`, `half`, and GH partitions were rejected. A live
+audit then showed 23 idle V100 nodes and other accounts running jobs submitted
+today with the identical 1-GPU/32-CPU/129872-MiB request. The `yihe`
+associations for `bdman37`, `bdman37g`, and `hpcuser` still exist, but even a
+five-minute test-only request pinned to idle `gpu008` fails. This isolates the
+failure to current `bdman37g` GPU allocation/eligibility rather than the node
+shape, source, artifacts, or queue occupancy. Bede is therefore classified
+scheduler/account infrastructure unavailable, not scientifically failed.
+Empty evidence roots from the two rejected submissions are retained.
 
 ## New source and preflight
 
@@ -101,18 +107,20 @@ finite KL, actor gradient norm, critic gradient norm and critic step norm.
 dual-5060 root:
 `/home/zzz/rlstack5060/workspaces/perf_runs/dual5060_mlp_fullEF_fullGGN_momentum0708_s2_10m_20260824`.
 
-At the latest snapshot, momentum 0.7 Ant seed0 and momentum 0.8 Ant seed0 had
-both reached 409,600 steps. GPUs were 77%/57% with 1123/1105 MiB used, and no
-OOM, NaN/Inf, traceback, dependency, disk or permission marker was found.
+At the latest snapshot, momentum 0.7 Ant seed0 had reached 2.62M steps and
+momentum 0.8 Ant seed0 had reached 2.54M steps. Both trainer processes remained
+live, and no OOM, NaN/Inf, traceback, dependency, disk or permission marker was
+found.
 Each cell runs seed0 then seed1; later environments are queued behind the
 current cell on each physical GPU.
 
-CSF3 fallback jobs:
-
-- preflight array `19206549_[0-1]`: `PENDING (QOSGrpGRES)`;
-- formal array `19206550_[0-5%4]`: `PENDING (Dependency)`.
-
-This is scheduler/quota waiting, not an algorithm result.
+At the user's direction this batch will not run on CSF3. Jobs `19206549` and
+`19206550` were cancelled: preflight element `19206549_0` completed before the
+cancellation reached it, while `19206549_1` and all formal elements were
+cancelled before training. Thus no CSF3 formal cell ran. The twelve remaining
+HalfCheetah/Humanoid/HumanoidStandup formal cells are queued as a non-colliding
+dual-5060 tail (PID `19130`) which starts only after the primary two-GPU queues
+finish.
 
 ## Preserved provenance
 
@@ -129,7 +137,8 @@ This is scheduler/quota waiting, not an algorithm result.
 - `.agent/AGENT_REPORT.md`
 - `momentum_smallbatch_stage/train_detach_smallbatch_momentum.py`
 - `momentum0708_mlp_stage/run_full_momentum_cell.py`
-- dual-5060 launcher and Bede/CSF3 preflight, formal and submission scripts
+- dual-5060 primary/tail launchers and Bede/CSF3 preflight, formal and
+  submission scripts
 
 Formal runs remain active. Final metrics, paired analysis, final commit and
 Planner callback are pending terminal completion.

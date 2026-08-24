@@ -1,6 +1,6 @@
 # Current Project State
 
-Updated: 2026-08-24T13:35:00Z
+Updated: 2026-08-24T13:59:00Z
 
 ## Active bounded task
 
@@ -18,13 +18,17 @@ Updated: 2026-08-24T13:35:00Z
   runtime actor/critic momentum telemetry matched exactly. Formal Ant cells
   are running, with the remaining Ant/Hopper/Swimmer/Walker2d cells queued on
   the two local GPU workers.
-- Bede was live and writable, but both formal submission attempts and
-  scheduler test requests were rejected as `Requested node configuration is
-  not available` despite idle V100 nodes. This is scheduler/infrastructure,
-  not algorithm evidence.
-- CSF3 fallback jobs `19206549` (preflight) and `19206550` (formal) cover
-  HalfCheetah/Humanoid/HumanoidStandup and are pending under `QOSGrpGRES` and
-  dependency respectively.
+- Bede was live and writable, but both submission attempts and scheduler test
+  requests were rejected before job creation as `Requested node configuration
+  is not available`. Current jobs from other accounts prove the identical
+  1-GPU/32-CPU/129872-MiB shape is valid and 23 V100 nodes are idle. The
+  `yihe` associations still exist, so this is isolated to current `bdman37g`
+  GPU allocation/eligibility rather than code, queue occupancy, or an
+  algorithm result.
+- At the user's direction, CSF3 jobs `19206549` and `19206550` were cancelled.
+  One short preflight element completed before cancellation; no CSF3 formal
+  training cell ran. The remaining HalfCheetah/Humanoid/HumanoidStandup cells
+  are queued as a tail on dual-5060 after its current four-environment queues.
 
 ## Previous completed state (2026-08-17)
 
