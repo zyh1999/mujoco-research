@@ -92,6 +92,13 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
     else:
         raise ValueError(f"Unsupported critic_optimizer: {critic_optimizer_name}")
 
+    print(
+        "Independent SGD momentum: "
+        f"actor={pi_optimizer.param_groups[0].get('momentum', 0.0)} "
+        f"critic={v_optimizer.param_groups[0].get('momentum', 0.0)}",
+        flush=True,
+    )
+
     # for trust region
     make_flat = lambda x:  torch.cat([grad.contiguous().view(-1) for grad in x if grad is not None])
     get_flat_grad = lambda params:  torch.cat([p.grad.contiguous().view(-1) for p in params if p.grad is not None])

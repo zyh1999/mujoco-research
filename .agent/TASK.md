@@ -1,153 +1,57 @@
-Status: READY
+Status: RUNNING
 Planner-Kind: ChatGPT
 Planner-Thread-ID: 6a8309f0-0bd0-83eb-a4ab-3ad1227b2e1c
 Executor-Callback: Wake this same Planner after AGENT_REPORT is pushed.
-Task-ID: MUJOCO-DUAL5060-SWIMMER-RERUN-20260817-03
+Task-ID: MUJOCO-MLP-FULLEF-FULLGGN-MOMENTUM-0708-20260824-04R
 
-# 唯一目标
+# 唯一科学目标
 
-在保持 M1/M2、严格匹配矩阵和历史 provenance 不变的前提下，修复 dual-5060 环境缺失 `mujoco_py` 的基础设施问题，并仅补跑当前 35-cell batch 中失败的 5 个 Swimmer-v3 cells 至既定的 `9,994,240` steps。
+在既定 no-shared large-batch MLP、Full-EF actor + Full-GGN critic 线上，建立七环境统一两 seed 的严格匹配 momentum 矩阵，新增并评估 actor/critic momentum `0.7/0.7` 与 `0.8/0.8`，公平比较 canonical low-momentum、`0.5/0.5` 和 `0.9/0.9`。本任务明确不属于 M2 FullEmp 线。
 
-# 已验证起始状态
+# Canonical scientific identity
 
-- CSF3 当前无 live MuJoCo job。
-- Bede array `1072326_0-17` scheduler-complete，但科学 artifacts 当前不可访问；本任务不补跑、不据此作科学结论。
-- dual-5060 batch：`30/35` 已完成到 `9,994,240` steps。
-- 剩余 5 个均为 Swimmer-v3 dependency failures，根因是缺少 `mujoco_py`。
-- 两张 5060 GPU 在状态采集时均空闲，但执行前必须刷新。
-- 历史失败 `18302268_10` 仍未映射；必须保留为 unresolved historical provenance，不得猜测归属。
+以仓库七环境乘五 seed formal low-momentum matrix 为 canonical parent，恢复 exact source commit、trainer SHA256、config 和实际 low-momentum 数值，不得把 `m≈0` 改写为字面 0。固定：large-batch MLP；no-shared actor/critic；Full-EF/Full-GGN；damping `0.03`；normalization `none`；Kaczmarz `false`；parameter L2 clip `0.5`；actor momentum = critic momentum；相同 VF、环境/version/wrapper、初始化、rollout、minibatch、epochs、LR、batch geometry、precision、solver、KL、评估语义、nominal 10M budget 和 terminal convention。除 momentum、run identity/path 和 telemetry 外不得改变科学字段。
 
-# 范围与不变量
+# 有界 seed 策略
 
-1. 仅处理已失败的 5 个 Swimmer-v3 cells，不新增环境、方法、seed、预算或超参。
-2. 从 batch manifest、失败日志和现有结果表恢复 5 个 cell 的 exact：
-   - M1/M2 身份
-   - method/baseline 身份
-   - seed
-   - config
-   - code commit
-   - environment/version
-   - command
-   - output path
-3. 除使 Swimmer-v3 可加载所必需的依赖修复外，所有字段必须与原 batch 严格一致。
-4. M1 与 M2 分开记录、分开验证；禁止跨线替代或汇总为同一方法。
-5. CSF3 是决策控制平面；计算优先使用当前空闲的 dual-5060。
-6. 禁止 `.54` / `ws4090-31`。
+1. 按 canonical low-momentum manifest 的预定义顺序选择前两个 seed ID 为统一 `S2`，禁止按表现或现有覆盖率选 seed。
+2. 五个 momentum、七环境均使用同一 `S2`。
+3. low-momentum 与 0.9 只复用 `S2` strict-valid cells，不重跑。
+4. 0.5 只复用相对 parent 字段严格匹配且属于 `S2` 的 cells，并补齐缺口。
+5. 新运行 `0.7 × 7 env × S2` 和 `0.8 × 7 env × S2`。
+6. 启动上限：0.7 最多14 cells，0.8 最多14 cells，0.5 缺口最多14 cells，总计最多42 cells；不得扩展五 seed。
 
-# 执行步骤与允许动作
+# 执行前证据门与资源放置
 
-## A. 执行前刷新
+- 完整读取四份 `.agent` 文件及 canonical low、0.5、0.9 manifests/configs/logs。
+- 刷新 CSF3、Bede、dual-5060 scheduler/quota、GPU/进程、trainer/container、磁盘、日志、reward/KL、artifacts 和错误扫描。
+- CSF3 为控制平面；Executor 自主决定 host、partition、GPU 和 concurrency。
+- Bede 仅在验证 artifacts 可持续写、读、回收后承载 formal cells。
+- 禁止 `.54` / `ws4090-31`；禁止 Jupyter。
+- 启动前建立五 momentum × 七环境 × `S2` formal matrix，核验 canonical identity/SHA256、low 实际值、0.9 和 0.5 相对 parent 的字段 diff、environment、seed、budget、terminal convention、artifact 和 provenance。
+- 若 low 与 0.9 在 momentum 外存在科学字段差异，标记 `BLOCKED_CANONICAL_REFERENCE`，不得启动或声称因果比较。
 
-- 先读取最新 `.agent/GOAL.md`、`STATE.md`、`TASK.md`、`AGENT_REPORT.md`。
-- 刷新 CSF3、Bede 和 dual-5060 的 scheduler、GPU、进程、日志、reward/KL、artifact 与错误扫描。
-- 核实没有重复运行这 5 个 cells，且两张 5060 仍可用。
-- 记录开始 HEAD、工作树和时间戳；保留所有无关改动。
+# 配置、preflight 与正式运行
 
-## B. 恢复严格匹配清单
+- 从同一 parent 机械生成 0.5 缺口、0.7、0.8 配置，diff 仅含 actor/critic momentum、run identity/path 和 telemetry。
+- 每个新 setting 至少一次无训练/单-update preflight，验证 MLP/no-shared、Full-EF/Full-GGN、d=0.03、normalization none、K=false、L2 clip=0.5、VF 匹配、momentum 精确解析，且 gradients、curvature、solver residual、VF telemetry 有限。
+- preflight 失败不得降级或调参；只启动缺失且过门 cells，使用非碰撞路径，从头训练至 canonical 10M 终点，不借用其他 momentum 状态。
+- 每 cell 记录 host/job/PID、container/image、commit/config/SHA256、seed、momentum、steps、reward、KL、VF、EF/GGN/solver telemetry、artifact freshness 和错误扫描。
+- 低于最高严格 reference 的 3/5 或明显崩溃只标记 `early-stop-candidate`，不得自动取消。
+- 区分 algorithmic、numerical、infrastructure/dependency、scheduler/quota waiting、matching/provenance blocker。
 
-为 5 个失败 cell 建立 immutable launch table，逐项对照原 35-cell manifest及成功 matched cells。任何关键字段无法恢复时：
+# 科学分析与输出
 
-- 不得猜测或启动该 cell；
-- 标记 `BLOCKED-METADATA`;
-- 报告缺失字段及查找证据。
+只使用 strict-valid 同环境同 `S2` cells，输出七环境 × 五 momentum × 两 seed 终点表；计算 0.7/0.8 相对 low/0.5/0.9 的 paired difference、ratio、win/loss/tie 和 rank；报告逐环境两-seed mean/std，但不得声称显著性或最终排名。跨环境汇总只用仓库预定义 normalization，并保留逐环境结果。
 
-## C. 最小依赖修复与 preflight
+更新 `.agent/STATE.md`、`.agent/AGENT_REPORT.md` 和正式结果表，包含 Task-ID、起止时间/HEAD、canonical identity/SHA256、low 实际值和 S2 证据、formal matrix、matching/dedup、placement、preflight、cell 状态/指标/artifacts/error scan、paired analysis、限制、early-stop/失败分类、唯一下一步建议、changed files、commit 和 push。
 
-- 从仓库 lockfile、既有成功环境或历史日志确定兼容的 `mujoco_py`、MuJoCo、Gym、Python及相关依赖版本。
-- 仅在隔离、可回滚环境中安装缺失依赖；不得宽泛升级依赖或修改共享环境。
-- 在 M1、M2 各执行一次无学习 Swimmer-v3 smoke test：import、env construction、reset、少量 step、模型初始化。
-- smoke test 必须记录版本、输出 shape、API 行为和 exit code。
-- 任一线 preflight 失败，则不得启动该线的正式 cells。
+必须保留且不混入比较：原 M2 30/35 与五个 Swimmer dependency failures、linked rerun 5/5、Bede `1072326_0-17` scientifically unmapped、`18302268_10` unresolved/unmapped 及其他历史 provenance。
 
-## D. 补跑
+# Acceptance Criteria / Prohibited Actions
 
-- 仅启动通过 metadata 核验和 preflight 的失败 cells。
-- 使用原始命令语义、seed、预算、commit、日志及 artifact 命名规则。
-- 在两张 5060 上安全分配，但不得改变单 run 资源语义来追求并行度。
-- 每个 run 必须从头按原语义重跑；除非原配置明确允许且存在属于该 cell 的有效 checkpoint，否则禁止拼接或借用 checkpoint。
-- 监控至完成、明确失败或本轮时间边界；不得启动额外 sweep。
-
-# 必需证据
-
-- 执行前后的 scheduler/GPU/process 快照。
-- 5-cell immutable launch table及其 manifest/log来源。
-- dependency 修复前后的精确 package diff。
-- M1/M2 smoke-test 原始证据。
-- 每个正式 run 的 job/PID、GPU、command、commit、config、seed、日志和 artifact 路径。
-- steps、reward、KL及仓库既定核心指标的最新值和 freshness。
-- NaN/Inf、OOM、traceback、dependency、磁盘和权限错误扫描。
-- 与对应最高严格匹配 baseline 的字段级 matching audit。
-- 所有历史失败行，包括：
-  - 5 个原 Swimmer-v3 dependency failures
-  - 新补跑结果作为关联的新记录，不覆盖旧记录
-  - `18302268_10` 保持 unresolved/unmapped
-  - Bede `1072326_0-17` 保持 scheduler-complete/artifacts-inaccessible
-
-# 早停与失败分类
-
-- 低于最高严格匹配 baseline 的 `3/5` 或前期明显崩溃时，只标记 `early-stop-candidate`，记录 step、比较值、baseline 和原因；本任务不得因科学表现主动取消。
-- 依赖、OOM、断连等分别分类为：
-  - algorithmic
-  - numerical
-  - infrastructure/dependency
-  - scheduler/quota waiting
-- dependency/infrastructure failure 不得计为算法失败或纳入科学均值。
-
-# Required Outputs
-
-更新 `.agent/STATE.md` 和 `.agent/AGENT_REPORT.md`，至少包含：
-
-1. Task-ID、起止时间、起始/结束 HEAD。
-2. refreshed live-state snapshot。
-3. 5-cell launch/matching table。
-4. dependency root cause、exact fix、package diff及 rollback。
-5. M1/M2 preflight 结果。
-6. 每个补跑 cell 的状态：
-   - completed-valid
-   - running
-   - failed-algorithmic
-   - failed-numerical
-   - failed-infrastructure
-   - waiting-scheduler/quota
-   - blocked-metadata
-7. steps、reward/KL、artifact、日志 freshness及错误扫描。
-8. batch completeness：分别报告原始 `30/35`、成功补齐数和新的有效完成数；禁止删除原失败计数。
-9. strict-matching audit及 early-stop-candidate 评估。
-10. Bede artifacts inaccessible 与 `18302268_10` unmapped 的保留状态。
-11. unresolved blockers 和唯一 recommended next action。
-12. changed files、commit hash、push result。
-
-# Acceptance Criteria
-
-- 5 个目标 cells 均被准确恢复身份，或明确标记 metadata blocker。
-- M1/M2 均保持原定义并分别核验。
-- 只补跑原失败 Swimmer-v3 cells。
-- 正式启动前 `mujoco_py` preflight 成功且依赖变化最小、可回滚。
-- 所有已启动 cells 达到 `9,994,240` steps或有完整失败证据。
-- 结果仅在字段级 strict matching 通过后标记 `completed-valid`。
-- 原 dependency failures、Bede artifact 问题和 `18302268_10` provenance 全部保留。
-- 报告提交并推送至 `origin/agent-work`；结束工作树干净或仅保留原有无关改动。
-
-# Prohibited Actions
-
-- 禁止补跑已完成的 30 个 cells。
-- 禁止修改算法、M1/M2 边界、seed、预算、超参或匹配矩阵。
-- 禁止把 M1 结果替代 M2，反之亦然。
-- 禁止覆盖、删除或重写历史失败记录和 artifacts。
-- 禁止将 Bede scheduler completion 当作科学完成。
-- 禁止映射或猜测 `18302268_10`。
-- 禁止启动 Procgen、Isaac或其他 MuJoCo sweep。
-- 禁止使用 `.54` / `ws4090-31`。
-- 禁止使用 Jupyter；若发现完全空闲超过一小时的相关 Jupyter，按既定规则处理并记录。
-- 禁止自动执行科学早停。
-- 禁止提交无关代码或用户已有改动。
-
-# 提交与推送
-
-仅提交本任务产生的 `.agent` 报告、必要的最小依赖声明及直接相关诊断文件。
-
-建议提交信息：
-
-`agent: recover five matched Swimmer-v3 cells`
-
-推送至 `origin/agent-work`，并在 `AGENT_REPORT.md` 中记录 commit hash 与 push 结果。
+- 身份必须是 no-shared large-batch MLP Full-EF+Full-GGN，而非 M2 FullEmp。
+- 五 momentum 使用同一 `S2` 且除 momentum 外完全一致；0.5 仅补 S2 缺口，0.7/0.8 各最多14 cells。
+- 所有启动 cells 完成 canonical 终点或有明确失败证据；只用 strict-valid paired cells 下结论。
+- 禁止 M2 momentum 补齐、shared、非 Full-EF/GGN、Kaczmarz、actor/critic momentum 不一致、momentum 专属调参、按表现选 seed、扩展五 seed、新增 momentum、覆盖历史 artifacts、借用状态、猜测 provenance、Procgen/Isaac 和无关提交。
+- 报告提交并推送至 `origin/agent-work`；成功后唤醒同一 Planner，请求恰好一个下一步有界 MuJoCo 任务。

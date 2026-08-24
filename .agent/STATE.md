@@ -1,6 +1,32 @@
 # Current Project State
 
-Updated: 2026-08-17T16:10:09Z
+Updated: 2026-08-24T13:35:00Z
+
+## Active bounded task
+
+- `MUJOCO-MLP-FULLEF-FULLGGN-MOMENTUM-0708-20260824-04R` is running.
+- Scientific identity is the no-shared large-batch MLP Full-EF actor plus
+  Full-GGN critic line, not the M2 Transformer FullEmp line.
+- Canonical `S2` is seeds `0,1`, selected by manifest order. Canonical
+  low-momentum is the literal PyTorch SGD value `1e-6` from CSF3 job
+  `17491617`; damping is `0.03`, normalization `none`, Kaczmarz false and the
+  executed full-curvature actor branch uses parameter L2 clipping at `0.5`.
+- Existing momentum `0.5` and `0.9` S2 references are strict-complete across
+  all seven environments under the CSF3 momentum matrix; no reference rerun
+  was launched.
+- dual-5060 preflights for momentum `0.7` and `0.8` completed with `rc=0` and
+  runtime actor/critic momentum telemetry matched exactly. Formal Ant cells
+  are running, with the remaining Ant/Hopper/Swimmer/Walker2d cells queued on
+  the two local GPU workers.
+- Bede was live and writable, but both formal submission attempts and
+  scheduler test requests were rejected as `Requested node configuration is
+  not available` despite idle V100 nodes. This is scheduler/infrastructure,
+  not algorithm evidence.
+- CSF3 fallback jobs `19206549` (preflight) and `19206550` (formal) cover
+  HalfCheetah/Humanoid/HumanoidStandup and are pending under `QOSGrpGRES` and
+  dependency respectively.
+
+## Previous completed state (2026-08-17)
 
 ## Established lines
 
