@@ -57,12 +57,13 @@ At launch refresh:
 - Bede: no user jobs, many V100 nodes reported idle, 723 GiB available and a
   write/read/delete probe under the project perf root passed.
 
-Placement keeps both momenta for a given environment on the same host class:
+The placement was revised after the user explicitly requested six cards with
+four processes on every card:
 
 | Host | Environments | Momenta | Seeds | Current state |
 |---|---|---|---|---|
-| dual-5060 | Ant, Hopper, Swimmer, Walker2d | 0.7, 0.8 | 0,1 | running local queues |
-| Bede | HalfCheetah, Humanoid, HumanoidStandup | 0.7, 0.8 | 0,1 | preflight passed; all six formal workers running |
+| dual-5060 | original Ant/Hopper/Swimmer/Walker2d queue | 0.7, 0.8 | 0,1 | original advancing queue preserved; not stopped |
+| Bede | Ant, HalfCheetah, Hopper, Humanoid, HumanoidStandup, Walker2d | 0.7, 0.8 | 0,1 | six cards, four concurrent trainers/card, 24 formal cells running |
 
 Bede submission was initially attempted twice. Both `sbatch` calls failed
 before job-ID creation with `Requested node configuration is not available`.
@@ -75,27 +76,46 @@ memory alone passes. Historical accounting had shown the derived ReqTRES, not
 the original submit directives, so it was not evidence that CPU and memory
 should be repeated in the script.
 
-Both Bede scripts now follow the site GPU-only template. Their SHA256 values
-are `3ea222f31f07ce8642b52774ce4ead6d968a980f92efbbb3fa2fa81c89001cd1`
-(preflight) and
-`ffa4da4c8b92e7eb22ea0d3de6d2c18f30e4b0bb2180fe743e939bec296e2ada`
-(formal). Exact-file test-only checks passed with the expected automatic 32
-CPU allocation. Retry root
-`/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_momentum0708_s2_10m_20260824_retry2`
-is non-colliding. Both preflight elements completed `0:0` in 2m12s, with
-momentum 0.7/0.8 worker statuses `FINISHED` and RC zero. Dependency released
-formal array `1074306_[0-5]`; all six workers are running across `gpu009`,
-`gpu025`, and `gpu026`, with each worker executing seeds 0 then 1. The initial
-error scan is clean. Empty evidence roots from the two rejected submissions
-are retained.
+The current Bede scripts follow the site GPU-only template and implement one
+environment per array element. Each element starts momentum 0.7 and 0.8 in
+parallel, and each momentum parent starts seeds 0 and 1 in parallel. This is
+exactly four trainer processes per allocated GPU. Current SHA256 values are
+`b741aae921e321822d9808db18a59cf40c77f62293ea6ea2f23d7b50b1e37de5`
+(preflight),
+`80d9222f0a68d620dc9106267e3386c2443e4f5b2b4c9af38bd0b687266562e4`
+(formal), and
+`0bce8eda36b70954a223a1f93a2824feca33633ff5f75b64890870738425c66a`
+(parallel-safe worker). Per-seed temporary directories prevent concurrent
+seed collisions.
+
+Topology preflight `1074452_[0-5]` launched 24 seed processes over six V100
+allocations. Twenty non-Swimmer processes completed or advanced normally, but
+the four Swimmer processes failed in environment construction with
+`gymnasium.error.DependencyNotInstalled: No module named 'mujoco_py'`. This is
+classified as a Bede dependency failure, not an algorithm or concurrency
+failure. Swimmer was therefore left assigned to the compatible isolated
+dual-5060 image, and Bede's six environments became Ant, HalfCheetah, Hopper,
+Humanoid, HumanoidStandup and Walker2d.
+
+Corrected retry root
+`/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_momentum0708_s2_10m_p4x6_20260824_retry4`
+is non-colliding. Preflight array `1074458_[0-5]` completed all 24 seed runs
+(`6 env x 2 momentum x 2 seed`) with `FINISHED`, all six array elements
+`COMPLETED 0:0`, 12 completed momentum-cell metrics files, no failure file and
+a clean traceback/OOM/NaN/dependency scan. Earlier serial formal array
+`1074306_[0-5]` was snapshotted, marked `REALLOCATED_TO_P4X6`, and cancelled;
+its partial logs remain immutable. Replacement formal array
+`1074464_[0-5]` started six one-GPU elements, with 24 formal seed statuses
+`RUNNING`. Slurm placed four one-GPU elements on `gpu027` and two on `gpu028`;
+the one-GRES-per-element allocations are six distinct physical V100 cards.
 
 ## New source and preflight
 
 The new trainer is the prior matched momentum trainer plus one runtime-only
 actor/critic momentum print. SHA256:
 `04c87fcd0af1e351f91a2ae4b1bbb0dc19fe419e5878e33d374c36c50b15fbdc`.
-Worker SHA256:
-`1df1ee282892d067832d41c5e3927c18c52d1d1ee80429acb58318807972c69b`.
+Worker SHA256 for the current concurrent version:
+`0bce8eda36b70954a223a1f93a2824feca33633ff5f75b64890870738425c66a`.
 
 dual-5060 uses the isolated Swimmer-compatible image
 `rlstack5060/mujoco-rat-swimmerv3:cu128`, image ID
@@ -118,12 +138,19 @@ finite KL, actor gradient norm, critic gradient norm and critic step norm.
 dual-5060 root:
 `/home/zzz/rlstack5060/workspaces/perf_runs/dual5060_mlp_fullEF_fullGGN_momentum0708_s2_10m_20260824`.
 
-At the latest snapshot, momentum 0.7 Ant seed0 had reached 2.62M steps and
-momentum 0.8 Ant seed0 had reached 2.54M steps. Both trainer processes remained
-live, and no OOM, NaN/Inf, traceback, dependency, disk or permission marker was
-found.
+At the latest inspected snapshot, both original Ant seed0 trainer processes
+remained live and had advanced beyond the earlier 2.62M/2.54M snapshot, with
+no OOM, NaN/Inf, traceback, dependency, disk or permission marker found.
 Each cell runs seed0 then seed1; later environments are queued behind the
 current cell on each physical GPU.
+
+The attempted stop/reallocation of these already-advancing dual-5060 cells was
+rejected by the execution safety gate because the user's six-card request did
+not separately authorize discarding their partial progress. No workaround was
+used and the processes/artifacts were left untouched. A Swimmer-only two-GPU
+launcher has been prepared for the compatible image, with two seeds concurrent
+per GPU, but it has not been launched while the original queues occupy those
+cards.
 
 At the user's direction this batch will not run on CSF3. Jobs `19206549` and
 `19206550` were cancelled: preflight element `19206549_0` completed before the
@@ -150,8 +177,8 @@ running.
 - `.agent/AGENT_REPORT.md`
 - `momentum_smallbatch_stage/train_detach_smallbatch_momentum.py`
 - `momentum0708_mlp_stage/run_full_momentum_cell.py`
-- dual-5060 primary/tail launchers and Bede/CSF3 preflight, formal and
-  submission scripts
+- dual-5060 primary/tail/Swimmer-only launchers and Bede/CSF3 preflight,
+  formal and submission scripts
 
 Formal runs remain active. Final metrics, paired analysis, final commit and
 Planner callback are pending terminal completion.

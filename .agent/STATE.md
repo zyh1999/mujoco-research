@@ -1,6 +1,6 @@
 # Current Project State
 
-Updated: 2026-08-24T14:36:00Z
+Updated: 2026-08-24T14:59:20Z
 
 ## Active bounded task
 
@@ -15,17 +15,26 @@ Updated: 2026-08-24T14:36:00Z
   all seven environments under the CSF3 momentum matrix; no reference rerun
   was launched.
 - dual-5060 preflights for momentum `0.7` and `0.8` completed with `rc=0` and
-  runtime actor/critic momentum telemetry matched exactly. Formal Ant cells
-  are running, with the remaining Ant/Hopper/Swimmer/Walker2d cells queued on
-  the two local GPU workers.
+  runtime actor/critic momentum telemetry matched exactly. The original two
+  one-trainer GPU queues remain live and their partial Ant evidence is
+  preserved. A proposed destructive reallocation was not performed because
+  stopping those advancing cells was not separately authorized.
 - Bede rejection was caused by explicit task/CPU topology in the submission
   scripts after the site's Slurm 25.11.7 upgrade, not account eligibility or
   capacity. With `JobSubmitPlugins=lua`, `--gres=gpu:1` passes and derives 32
   CPUs/129872 MiB; adding `--cpus-per-task=32` or even `--ntasks=1` fails.
-  Corrected exact-file test-only checks passed. Preflight `1074304_[0-1]`
-  completed `0:0`; formal `1074306_[0-5]` released and all six workers are
-  running across `gpu009`, `gpu025`, and `gpu026` with a clean initial error
-  scan.
+  Corrected exact-file test-only checks passed. The earlier serial formal job
+  `1074306_[0-5]` was snapshotted and cancelled as infrastructure reallocation,
+  not algorithm failure, when the user requested four trainers per card.
+- The replacement Bede topology is exactly six one-GPU array elements, one
+  environment per card, with momentum 0.7 and 0.8 parent workers concurrent
+  and seeds 0 and 1 concurrent inside each parent: four trainers per card and
+  24 formal cells total. The first 24-way topology preflight (`1074452`) proved
+  concurrency but exposed the known Bede-only Swimmer `mujoco_py` dependency
+  failure. Swimmer was removed from Bede; retry preflight `1074458_[0-5]`
+  completed all 24 non-Swimmer seed runs with `rc=0` and a clean error scan.
+  Formal array `1074464_[0-5]` is now running all 24 cells on six allocated
+  V100s under the isolated retry4 root.
 - At the user's direction, CSF3 jobs `19206549` and `19206550` were cancelled.
   One short preflight element completed before cancellation; no CSF3 formal
   training cell ran. The remaining HalfCheetah/Humanoid/HumanoidStandup cells

@@ -14,9 +14,10 @@ sha256sum \
 {
   echo "task_id=MUJOCO-MLP-FULLEF-FULLGGN-MOMENTUM-0708-20260824-04R"
   echo "host=$(hostname -f)"
-  echo "envs=halfcheetah,humanoid,humanoidstandup"
+  echo "envs=ant,halfcheetah,hopper,humanoid,humanoidstandup,walker2d"
   echo "momenta=0.7,0.8"
   echo "seeds=0,1"
+  echo "placement=6_physical_v100_each_4_trainers"
   echo "started=$(date --iso-8601=seconds)"
 } > "$RUN_ROOT/run_info.txt"
 
