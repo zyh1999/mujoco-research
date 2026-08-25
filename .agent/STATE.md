@@ -1,12 +1,16 @@
 # Current Project State
 
-Updated: 2026-08-25T04:20:56Z
+Updated: 2026-08-25T04:29:26Z
 
 ## Active bounded task
 
-- `MUJOCO-MLP-FULLEF-FULLGGN-KTRUE-M050708-S01-20260825-05` is running under
-  the replacement task explicitly requested by the user and authored by the
-  existing ChatGPT Planner.
+- `MUJOCO-MLP-FULLEF-FULLGGN-KTRUE-M050708-S01-20260825-05` is blocked after
+  its one authorized three-setting preflight attempt; no formal cell launched.
+  The failure is infrastructure-only: the new Bede scripts omitted the
+  previously required `$ROOT/local/glfw-conda/lib` entry in `LD_LIBRARY_PATH`,
+  so all three HalfCheetah constructors exited before any optimizer/update.
+  Dependent Wave 1 was cancelled without starting. The Planner prohibited
+  automatic preflight retry, so a bounded launcher-correction task is needed.
 - The new isolated matrix is no-shared large-batch MLP Full-EF actor plus
   Full-GGN critic, Kaczmarz true, damping 0.03, normalization none, parameter
   L2 clip 0.5, matched actor/critic momentum 0.5/0.7/0.8, seven environments

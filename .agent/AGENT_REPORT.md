@@ -189,7 +189,7 @@ with all evidence preserved and will not be resumed or mixed with K=true.
 ## Replacement K=true task start
 
 - Task-ID: `MUJOCO-MLP-FULLEF-FULLGGN-KTRUE-M050708-S01-20260825-05`
-- Status: `RUNNING`
+- Status: `BLOCKED`
 - Assignment commit: `f68c1ed`
 - Formal matrix: 42 unique cells (`0.5/0.7/0.8 x 7 env x seeds 0,1`)
 - Placement: Bede only; six V100s; max four trainers/card; strict waves 24+18
@@ -202,6 +202,23 @@ with all evidence preserved and will not be resumed or mixed with K=true.
 - The K=true config field diff is exactly `is_karzmarz: False -> True`.
 - A frozen 42-row manifest, Bede wave launchers and non-intervention runtime
   telemetry for actual momentum-buffer `previous_projection` use are staged.
-- Mandatory three-setting preflight and formal launches are pending upload.
+- Source/config commit: `5d531d8` (pushed to `origin/agent-work`).
+- Bede root:
+  `/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_ktrue_m050708_s01_10m_20260825`.
+- Preflight array `1074569_[0-2]` attempted exact momentum 0.5, 0.7 and 0.8.
+  All three failed after 1m23s before the first update while constructing
+  HalfCheetah-v4. Every seed stderr ends with
+  `ImportError: Failed to load GLFW3 shared library.`
+- This is a launcher/infrastructure regression: the new scripts omitted
+  `export LD_LIBRARY_PATH=$ROOT/local/glfw-conda/lib:${LD_LIBRARY_PATH:-}`,
+  which was present in the successful K=false Bede launchers. It is not an
+  algorithmic, numerical or Kaczmarz-path result.
+- No `KACZMARZ_PROJECTION_USED` call occurred because environment creation
+  failed first. All three settings remain blocked at the mandatory gate.
+- Wave 1 `1074570_[0-5]` remained `DependencyNeverSatisfied` and was cancelled
+  at zero elapsed. Formal launch count is zero; all 42 cells remain unstarted.
+- The Planner prohibited automatic retry. The exact next bounded action needed
+  is a launcher-only correction restoring the known Bede GLFW library path,
+  followed by the same three preflights; no algorithm/config/manifest change.
 
-TASK_RUNNING
+BLOCKED
