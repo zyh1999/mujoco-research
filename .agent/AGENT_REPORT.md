@@ -335,4 +335,87 @@ explicitly authorizes reporting-only telemetry corrections for the stale
 isolated preflight gate. It must preserve the scientific configuration and
 continue to prohibit formal launch until that gate passes.
 
+## Telemetry-corrected preflight task
+
+### Assignment and source
+
+- Task-ID: `MUJOCO-KTRUE-TELEMETRY-PREFLIGHT-AND-BEDE42-20260825-08`
+- Starting HEAD: `9bdb1c4`
+- Assignment commit: `b5464d6`
+- Telemetry-only commit: `19f86c8`
+- Frozen scientific config and 42-row manifest remained unchanged.
+
+The permitted patch corrected the auxiliary Kaczmarz report source and added
+detached diagnostics for the frozen exact systems:
+
+`relative residual = ||A x - b||_2 / max(||b||_2, 1e-12)`.
+
+For the Full-EF actor, `A = (H H^T / m) D_ratio + 0.03 I` and
+`b = advantage - previous_projection`. For the Full-GGN critic,
+`A = J J^T / m + 0.03 I` and `b = value residual`. Both diagnostics run after
+the corresponding solution is fixed, under `torch.no_grad()`, with detached
+inputs and no random operation, optimizer write or training-control use.
+
+Source SHA256 values:
+
+- reporting worker: `fc5eb1756bd5f0b9ad9aa539cf74f32583761a11153b6f59c31501fe0cb95c3e`
+- trainer: `b2dbc873374df12527c83ffec581cdb3169e9d0cdea12fb886fc29c17c49c606`
+- residual helper: `2870ba3d71c1482b3b9890410e1a72e043cc22b3309f43a8de74161c3bd0f6ac`
+- nonintervention audit: `c8488dc0c24d2527797aae0bcd07717a9b5bc4853688cede653fd3a153e95522`
+
+### Telemetry semantics gate
+
+The fixed-input Bede audit returned RC zero and `all_bitwise_equal=true` for:
+
+- actor and critic parameters;
+- actor and critic optimizer states, including momentum buffers;
+- actor and critic directions;
+- previous projection;
+- RNG state;
+- loss, KL and VF values.
+
+Its detached actor residual was `2.5891012e-07` and critic residual was
+`7.19244724e-07`; both numerator and denominator were finite. The telemetry
+helper did not alter any audited object.
+
+### Fresh Bede state and single authorized preflight
+
+At `2026-08-25T05:54:02+01:00`, Bede had no `yihe` job, many idle V100 nodes,
+790 TiB available and a new write/read/delete probe passed. Only Bede was
+queried or used.
+
+New isolated root:
+`/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_ktrue_m050708_s01_10m_20260825_telemetryfix1`.
+
+The one authorized array `1074576_[0-2]` ended:
+
+| Element | Momentum | State | Elapsed | Exit | Node |
+|---:|---:|---|---|---|---|
+| 0 | 0.5 | FAILED | 00:00:02 | 1:0 | gpu024 |
+| 1 | 0.7 | FAILED | 00:00:03 | 1:0 | gpu024 |
+| 2 | 0.8 | FAILED | 00:00:02 | 1:0 | gpu024 |
+
+All three failed before environment construction, optimizer creation or any
+update. The exact common error is:
+
+`FileNotFoundError: /nobackup/projects/bdman37/yihe/src/ICML2026-RAT/configurations/rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml`.
+
+The reporting worker's new Kaczmarz-field reader assumed the canonical
+`configurations/` directory, while this isolated task's unchanged config is at
+`ktrue_momentum_stage/rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml`.
+This is a telemetry/reporting path-resolution defect, not Kaczmarz,
+Full-EF/Full-GGN, numerical, GLFW, GPU or scheduler evidence.
+
+### Formal gate and required next authorization
+
+The task forbids any further telemetry modification or a second preflight after
+one of the three cells fails. No correction or retry was attempted. No formal
+placeholder or Wave 1 was submitted. Formal launch count remains zero and all
+42 formal cells remain unstarted.
+
+The only recommended next action is a Planner-authored launcher/reporting task
+that authorizes resolving the K=true config from its existing stage path (or
+passing that exact path explicitly), without copying/changing the config, then
+permits one new isolated three-cell preflight and conditional Bede Wave 1.
+
 BLOCKED

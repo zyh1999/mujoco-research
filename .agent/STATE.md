@@ -1,9 +1,25 @@
 # Current Project State
 
-Updated: 2026-08-25T04:42:00Z
+Updated: 2026-08-25T04:57:00Z
 
 ## Active bounded task
 
+- `MUJOCO-KTRUE-TELEMETRY-PREFLIGHT-AND-BEDE42-20260825-08` is blocked after
+  its single authorized telemetry-corrected preflight round. The fixed-input
+  telemetry nonintervention audit passed bitwise for actor/critic parameters,
+  optimizer state, directions, previous-projection buffer, RNG, loss, KL and
+  VF. Telemetry source commit is `19f86c8`.
+- New Bede preflight `1074576_[0-2]` failed before environment construction or
+  optimizer/update in 2-3 seconds. The reporting worker looked only under
+  `$REPO/configurations/` for the K=true config, but this isolated task keeps
+  the config under `$REPO/ktrue_momentum_stage/`. All three elements therefore
+  exited with the same `FileNotFoundError`. This is a telemetry/reporting path
+  bug, not Kaczmarz, numerical or GPU evidence.
+- The task prohibits any further telemetry modification or second preflight
+  after a failure. No formal job was submitted; formal launch count remains
+  zero and all 42 cells remain unstarted. A new Planner authorization is
+  required for a bounded config-path resolution correction and one new
+  isolated preflight.
 - `MUJOCO-KTRUE-GLFW-PREFLIGHT-AND-BEDE42-20260825-07` is blocked at its formal
   launch gate after its single authorized corrected preflight attempt. The
   launcher-only GLFW correction succeeded and job `1074573_[0-2]` completed
