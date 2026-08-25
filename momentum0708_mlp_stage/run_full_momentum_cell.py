@@ -19,6 +19,15 @@ FINITE_RE = re.compile(r"\|\s*(?:kl|v_grad_norm|v_step_norm|grad_norm)\s*\|\s*([
 BAD_RE = re.compile(r"out of memory|\bnan\b|\binf\b|traceback|linalgerror|assertionerror", re.I)
 
 
+def configured_kaczmarz(repo: Path, config_name: str) -> bool:
+    config_path = repo / "configurations" / config_name
+    text = config_path.read_text(errors="strict")
+    matches = re.findall(r"^\s*is_karzmarz\s*:\s*(true|false)\s*$", text, re.I | re.M)
+    if len(matches) != 1:
+        raise RuntimeError(f"expected one is_karzmarz field in {config_path}, found {len(matches)}")
+    return matches[0].lower() == "true"
+
+
 def command(args: argparse.Namespace, seed: int, timesteps: int) -> list[str]:
     return [
         args.python, "-u", str(args.trainer),
@@ -62,6 +71,22 @@ def validate(seed_dir: Path, momentum: float, require_endpoint: bool, require_ka
             raise RuntimeError("Kaczmarz previous_projection used fewer than two times")
         if not all(int(buffers) > 0 and int(finite) == 1 and math.isfinite(float(norm)) for _, buffers, norm, finite in used):
             raise RuntimeError("invalid Kaczmarz previous_projection telemetry")
+        for name in ("actor_solver_residual", "critic_solver_residual"):
+            residuals = re.findall(
+                rf"SOLVER_RESIDUAL {name}=([-+0-9.eE]+) numerator=([-+0-9.eE]+) "
+                rf"denominator=([-+0-9.eE]+) epsilon=([-+0-9.eE]+) finite=(\d+)",
+                stdout,
+            )
+            if not residuals:
+                raise RuntimeError(f"missing {name} telemetry")
+            if not all(
+                int(finite) == 1
+                and all(math.isfinite(float(value)) for value in (residual, numerator, denominator, epsilon))
+                and float(denominator) > 0.0
+                and float(epsilon) > 0.0
+                for residual, numerator, denominator, epsilon, finite in residuals
+            ):
+                raise RuntimeError(f"invalid {name} telemetry")
     finite = [float(m.group(1)) for m in FINITE_RE.finditer(stdout)]
     if not finite or not all(math.isfinite(value) for value in finite):
         raise RuntimeError("missing or non-finite training telemetry")
@@ -120,6 +145,9 @@ def main() -> int:
     parser.add_argument("--parallel-seeds", action="store_true")
     parser.add_argument("--require-kaczmarz", action="store_true")
     args = parser.parse_args()
+    runtime_kaczmarz = configured_kaczmarz(args.repo, args.config)
+    if args.require_kaczmarz and not runtime_kaczmarz:
+        raise RuntimeError("--require-kaczmarz requested but config resolves is_karzmarz=false")
     if args.preflight:
         cell = args.run_root / "preflight" / args.env / f"momentum_{args.momentum}"
         base_seed = args.seeds[0]
@@ -137,7 +165,8 @@ def main() -> int:
     (cell / "run_info.txt").write_text(
         f"identity=no_shared_largebatch_mlp_fullEF_fullGGN_momentum0708\n"
         f"environment={args.env}\nmomentum={args.momentum}\nseeds={','.join(str(x[0]) for x in seed_specs)}\n"
-        f"timesteps={seed_specs[0][1]}\ndamping=0.03\nnormalization=none\nkaczmarz=false\n"
+        f"timesteps={seed_specs[0][1]}\ndamping=0.03\nnormalization=none\n"
+        f"kaczmarz={str(runtime_kaczmarz).lower()}\n"
         f"post_grad=parameter_l2_clip\nmax_grad_norm=0.5\nactor_rows=1024\ncritic_rows=1024\n"
         f"kaczmarz_required={str(args.require_kaczmarz).lower()}\n"
     )

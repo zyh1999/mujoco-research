@@ -21,6 +21,7 @@ import torch.multiprocessing as mp
 from utils.runners import Runner
 from utils.cg import conjugate_gradient
 from utils.sketching import normalize_score_kernel, score_kernel, solve_score_kernel_system
+from ktrue_momentum_stage.solver_residual_telemetry import detached_exact_score_solver_residual
 from torch.optim import Adam, SGD
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.tensorboard import SummaryWriter
@@ -365,9 +366,11 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
         return _loss, _loss_pi, pi_info
 
     kaczmarz_runtime = {"no_history": 0, "projection_used": 0}
+    solver_residual_runtime = {"actor": 0, "critic": 0}
 
     def RAT_ActorUpdate(_obs, _act, _adv, _outputs_old):
         # RAT solves a sample-space system before mapping the step back to parameters.
+        actor_solver_residual = None
         _outputs = actor_critic.forward_pi(_obs)
 
         if actor_critic.is_discrete:
@@ -556,6 +559,31 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
                     normalization_eps=algo_config.fisher_kernel_normalization_eps,
                     previous_projection=previous_projection,
                 )
+                if str(algo_config.fisher_kernel).lower() != 'exact':
+                    raise RuntimeError('solver residual telemetry requires the frozen exact actor kernel')
+                if str(algo_config.fisher_kernel_normalization).lower() != 'none':
+                    raise RuntimeError('solver residual telemetry requires frozen normalization=none')
+                actor_solver_residual, residual_numerator, residual_denominator = (
+                    detached_exact_score_solver_residual(
+                        H,
+                        _actor_adv,
+                        _png_adv,
+                        algo_config.cg_damping,
+                        ratio=_actor_ratio,
+                        previous_projection=previous_projection,
+                    )
+                )
+                solver_residual_runtime["actor"] += 1
+                if solver_residual_runtime["actor"] <= 4:
+                    print(
+                        "SOLVER_RESIDUAL "
+                        f"actor_solver_residual={actor_solver_residual:.9g} "
+                        f"numerator={residual_numerator:.9g} "
+                        f"denominator={residual_denominator:.9g} "
+                        "epsilon=1e-12 "
+                        f"finite={int(math.isfinite(actor_solver_residual))}",
+                        flush=True,
+                    )
                 if previous_projection is not None:
                     kaczmarz_runtime["projection_used"] += 1
                     if kaczmarz_runtime["projection_used"] <= 4:
@@ -863,6 +891,8 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
                            actor_grouped_rho_std=grouped_rho_std,
                            actor_grouped_rho_min=grouped_rho_min,
                            actor_grouped_rho_max=grouped_rho_max)
+            if actor_solver_residual is not None:
+                pi_info['actor_solver_residual'] = actor_solver_residual
 
         return _loss, _loss_pi, pi_info
 
@@ -1039,6 +1069,7 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
         return _loss, _loss_pi, pi_info
 
     def CriticGN_Update(_obs, _ret):
+        critic_solver_residual = None
         _vals = actor_critic.forward_v(_obs)
         _residual = (_ret - _vals).detach()
         mb_loss_v = F.mse_loss(_vals, _ret)
@@ -1126,6 +1157,29 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
                     normalization_eps=algo_config.fisher_kernel_normalization_eps,
                     previous_projection=None,
                 )
+                if str(algo_config.fisher_kernel).lower() != 'exact':
+                    raise RuntimeError('solver residual telemetry requires the frozen exact critic kernel')
+                if str(algo_config.fisher_kernel_normalization).lower() != 'none':
+                    raise RuntimeError('solver residual telemetry requires frozen normalization=none')
+                critic_solver_residual, residual_numerator, residual_denominator = (
+                    detached_exact_score_solver_residual(
+                        J,
+                        _critic_residual,
+                        alpha,
+                        algo_config.cg_damping,
+                    )
+                )
+                solver_residual_runtime["critic"] += 1
+                if solver_residual_runtime["critic"] <= 4:
+                    print(
+                        "SOLVER_RESIDUAL "
+                        f"critic_solver_residual={critic_solver_residual:.9g} "
+                        f"numerator={residual_numerator:.9g} "
+                        f"denominator={residual_denominator:.9g} "
+                        "epsilon=1e-12 "
+                        f"finite={int(math.isfinite(critic_solver_residual))}",
+                        flush=True,
+                    )
                 step_dir = torch.mv(J.t(), alpha) / num_samples
                 num_curvature_samples = num_samples
 
@@ -1144,6 +1198,8 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
                           critic_free_rho=int(use_critic_free_rho),
                           critic_free_rho_value=critic_free_rho_value,
                           critic_independent_anchors=int(use_critic_free_rho))
+            if critic_solver_residual is not None:
+                v_info['critic_solver_residual'] = critic_solver_residual
 
         return mb_loss_v, v_info
 
