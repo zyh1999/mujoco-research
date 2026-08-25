@@ -13,6 +13,7 @@ set -Eeuo pipefail
 ROOT=/nobackup/projects/bdman37/yihe
 export LD_LIBRARY_PATH=$ROOT/local/glfw-conda/lib:${LD_LIBRARY_PATH:-}
 REPO=$ROOT/src/ICML2026-RAT
+STAGE=$REPO/ktrue_momentum_stage
 PY=$ROOT/ppc64le/envs/rat/bin/python
 RUN_ROOT=${RUN_ROOT:?RUN_ROOT must be exported}
 WAVE=${WAVE:?WAVE must be exported}
@@ -31,7 +32,7 @@ run_pair() {
   "$PY" -u "$REPO/momentum0708_mlp_stage/run_full_momentum_cell.py" \
     --repo "$REPO" \
     --trainer "$REPO/momentum0708_mlp_stage/train_detach_smallbatch_momentum.py" \
-    --config rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml \
+    --config-path "$STAGE/rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml" \
     --python "$PY" \
     --run-root "$RUN_ROOT" \
     --env "$env_name" \

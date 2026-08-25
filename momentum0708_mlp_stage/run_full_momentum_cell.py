@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -19,19 +20,26 @@ FINITE_RE = re.compile(r"\|\s*(?:kl|v_grad_norm|v_step_norm|grad_norm)\s*\|\s*([
 BAD_RE = re.compile(r"out of memory|\bnan\b|\binf\b|traceback|linalgerror|assertionerror", re.I)
 
 
-def configured_kaczmarz(repo: Path, config_name: str) -> bool:
-    config_path = repo / "configurations" / config_name
-    text = config_path.read_text(errors="strict")
+def configured_kaczmarz(config_path: Path) -> tuple[bool, Path, str]:
+    config_realpath = config_path.resolve(strict=True)
+    raw = config_realpath.read_bytes()
+    text = raw.decode(errors="strict")
     matches = re.findall(r"^\s*is_karzmarz\s*:\s*(true|false)\s*$", text, re.I | re.M)
     if len(matches) != 1:
-        raise RuntimeError(f"expected one is_karzmarz field in {config_path}, found {len(matches)}")
-    return matches[0].lower() == "true"
+        raise RuntimeError(f"expected one is_karzmarz field in {config_realpath}, found {len(matches)}")
+    return matches[0].lower() == "true", config_realpath, hashlib.sha256(raw).hexdigest()
 
 
 def command(args: argparse.Namespace, seed: int, timesteps: int) -> list[str]:
+    trainer_config = os.path.relpath(args.config_realpath, args.repo / "configs")
+    trainer_config_realpath = (args.repo / "configs" / trainer_config).resolve(strict=True)
+    if trainer_config_realpath != args.config_realpath:
+        raise RuntimeError(
+            f"trainer/reporting config mismatch: {trainer_config_realpath} != {args.config_realpath}"
+        )
     return [
         args.python, "-u", str(args.trainer),
-        "--config", args.config,
+        "--config", trainer_config,
         "--env_name", args.env,
         "--seed", str(seed),
         "--device", "0",
@@ -133,7 +141,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, required=True)
     parser.add_argument("--trainer", type=Path, required=True)
-    parser.add_argument("--config", required=True)
+    parser.add_argument("--config-path", type=Path, required=True)
     parser.add_argument("--python", required=True)
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--env", choices=ENVS, required=True)
@@ -145,7 +153,7 @@ def main() -> int:
     parser.add_argument("--parallel-seeds", action="store_true")
     parser.add_argument("--require-kaczmarz", action="store_true")
     args = parser.parse_args()
-    runtime_kaczmarz = configured_kaczmarz(args.repo, args.config)
+    runtime_kaczmarz, args.config_realpath, config_sha256 = configured_kaczmarz(args.config_path)
     if args.require_kaczmarz and not runtime_kaczmarz:
         raise RuntimeError("--require-kaczmarz requested but config resolves is_karzmarz=false")
     if args.preflight:
@@ -166,6 +174,8 @@ def main() -> int:
         f"identity=no_shared_largebatch_mlp_fullEF_fullGGN_momentum0708\n"
         f"environment={args.env}\nmomentum={args.momentum}\nseeds={','.join(str(x[0]) for x in seed_specs)}\n"
         f"timesteps={seed_specs[0][1]}\ndamping=0.03\nnormalization=none\n"
+        f"config_path={args.config_path}\nconfig_realpath={args.config_realpath}\n"
+        f"config_sha256={config_sha256}\ntrainer_config_realpath={args.config_realpath}\n"
         f"kaczmarz={str(runtime_kaczmarz).lower()}\n"
         f"post_grad=parameter_l2_clip\nmax_grad_norm=0.5\nactor_rows=1024\ncritic_rows=1024\n"
         f"kaczmarz_required={str(args.require_kaczmarz).lower()}\n"

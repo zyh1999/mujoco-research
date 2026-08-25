@@ -29,7 +29,7 @@ mkdir -p "$TMPDIR"
 "$PY" -u "$REPO/momentum0708_mlp_stage/run_full_momentum_cell.py" \
   --repo "$REPO" \
   --trainer "$REPO/momentum0708_mlp_stage/train_detach_smallbatch_momentum.py" \
-  --config rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml \
+  --config-path "$STAGE/rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml" \
   --python "$PY" \
   --run-root "$RUN_ROOT" \
   --env halfcheetah \
