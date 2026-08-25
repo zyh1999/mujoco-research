@@ -1,114 +1,110 @@
-Status: BLOCKED
+Status: READY
 Planner-Kind: ChatGPT
 Planner-Thread-ID: 6a8309f0-0bd0-83eb-a4ab-3ad1227b2e1c
 Executor-Callback: Wake this same Planner after AGENT_REPORT is pushed.
-Task-ID: MUJOCO-KTRUE-TELEMETRY-PREFLIGHT-AND-BEDE42-20260825-08
+Task-ID: MUJOCO-KTRUE-CONFIGPATH-PREFLIGHT-AND-BEDE42-20260825-09
 
 # Unique objective
 
-Make only two reporting/telemetry corrections for the frozen Kaczmarz=true
-experiment: write the actual runtime Kaczmarz value to `run_info.txt`, and
-expose distinct auditable `actor_solver_residual` and
-`critic_solver_residual` values. Then run exactly one new isolated three-cell
-preflight. Only if telemetry semantics and all three preflights pass may the
-unchanged 42-cell Bede matrix run in frozen 24+18 waves.
+Fix only the reporting telemetry config-path resolution so
+`configured_kaczmarz()` reads the exact frozen config actually supplied to the
+trainer under `ktrue_momentum_stage/`, not an assumed `configurations/` path.
+After path-only auditing, run exactly one new isolated three-momentum
+preflight. Only if every path, telemetry, Kaczmarz, projection and numerical
+gate passes may the frozen 42-cell Bede matrix launch in 24+18 waves.
 
 # Preserved evidence
 
-Preserve commits `52dcce1`, `f209f22`, `9bdb1c4`, and `32c8aef`; failed GLFW
-preflight `1074569_[0-2]`; cancelled zero-elapsed placeholder
-`1074570_[0-5]`; and successful runtime-but-telemetry-blocked corrected
-preflight `1074573_[0-2]`. Formal launch count remains zero and all 42 cells
-remain unstarted. Never overwrite or reclassify any prior root or artifact.
+Preserve assignment `b5464d6`, telemetry source `19f86c8`, report `9efda14`,
+prior report `9bdb1c4`, and failed preflight `1074576_[0-2]`. The three cells
+failed before environment/optimizer/update because the reader used the wrong
+directory; this is reporting-only path evidence. Formal launch count remains
+zero. Also preserve `1074569`, `1074570`, successful runtime preflight
+`1074573`, old K=false closure and interrupted dual-5060 provenance. Never
+overwrite, delete or reclassify any prior root/artifact.
 
-# Frozen scientific identity
+# Only authorized code correction
 
-- large-batch no-shared MLP, Full-EF actor, Full-GGN critic, Kaczmarz true;
-- matched actor/critic momentum exactly 0.5, 0.7, 0.8;
-- damping 0.03, normalization none, parameter L2 clip 0.5;
-- canonical seven environments, seeds 0,1, exactly 42 unique formal cells;
-- identical VF, architecture, initialization, rollout, minibatch, epochs, LR,
-  batch geometry, precision, solver, clip, KL, evaluation and 10M endpoint;
-- frozen config, manifest and GLFW-corrected launcher semantics do not change.
+Pass the exact config path used for this run explicitly to reporting. Resolve
+it with `realpath`, read that same file, and record resolved path, SHA256 and
+parsed Kaczmarz value. It must be the existing
+`ktrue_momentum_stage/rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml`.
 
-# Only authorized telemetry modifications
+Do not search directories, glob, fallback/default, copy/move/change the config,
+create a second config, or let reporting affect trainer runtime. An explicit
+reporting-only absolute path is allowed, but it must be identical to the
+trainer's config realpath and frozen SHA256.
 
-1. Replace the worker's hardcoded `kaczmarz=false` report with the actual
-   runtime/config value. K=true must be consistent in config, stdout and
-   `run_info.txt`; no other scientific report field may change.
-2. Emit separately named `actor_solver_residual` and `critic_solver_residual`
-   for the actual Full-EF and Full-GGN systems. Define the residual equation,
-   numerator, denominator, epsilon and measurement point. Prefer already
-   computed values; otherwise compute detached/read-only after the direction
-   is fixed using the existing matrix/operator, RHS and direction.
-3. Diagnostics must not change direction, optimizer/parameters,
-   `previous_projection`, RNG, solver iterations/stopping/precision, gradients,
-   algorithm state or training control flow. No placeholder/proxy residuals.
+# Frozen science
 
-If both residuals cannot be exposed without scientific change, stop as
-`BLOCKED_TELEMETRY_IMPLEMENTATION`.
+Keep unchanged: large-batch no-shared MLP; Full-EF actor; Full-GGN critic;
+Kaczmarz true; matched momentum 0.5/0.7/0.8; damping 0.03; normalization none;
+parameter L2 clip 0.5; canonical seven environments; seeds 0,1; all VF,
+architecture, initialization, rollout, minibatch, epochs, LR, geometry,
+precision, solver, KL, evaluation and 10M endpoint fields; frozen 42-row
+manifest; trainer mathematics; residual telemetry; GLFW export.
 
-# Telemetry-only semantics gate
+# Path-only semantics gate
 
-- Preserve before/after SHA256 and line diff of every modified worker/trainer.
-- The diff may contain only actual Kaczmarz reporting, detached residual
-  computation/exposure and corresponding log/artifact fields.
-- Before the new preflight, run a fixed-seed/fixed-input A/B regression and
-  compare actor/critic parameters, optimizer state, directions,
-  `previous_projection` buffers, RNG state, losses, KL and VF update.
-- Other than new telemetry, these must be bitwise identical; if platform
-  operations prevent bitwise comparison, document why and provide exact zero
-  or machine-precision evidence without inventing a tolerance.
-- Failure blocks all new preflight and formal work.
+- Preserve before/after worker SHA256 and line diff; diff may only pass/read/
+  report the exact config path, realpath and SHA plus non-colliding identity.
+- On Bede prove the exact file exists/readable, realpath points to the stage
+  config, SHA256 equals the frozen hash, trainer/reporting paths match, and the
+  parser returns Kaczmarz true.
+- The old wrong path must fail explicitly with no fallback/default.
+- Rerun the fixed-input audit: actor/critic parameters, optimizer states and
+  momentum, directions, previous projection, RNG, loss/KL/VF and detached
+  residuals must remain bitwise identical.
+- Path reporting must not enter optimizer, solver or training control.
+
+Any failure blocks preflight as `BLOCKED_CONFIG_PATH_SEMANTICS`.
 
 # Resources
 
-Use only Bede V100: at most six GPUs, four trainers per GPU, 24 globally. Do
-not access/query/use CSF3, dual-5060, other remotes, `.54`, `ws4090-31`, or
-Jupyter. Refresh scheduler/GPU/process/quota/storage and write/read/delete
-artifact capability first. Keep the established GLFW export unchanged.
+Use only Bede V100, at most six GPUs, four trainers/card and 24 globally. Never
+access/query/use CSF3, dual-5060, other remotes, `.54`, `ws4090-31` or Jupyter.
+Refresh Bede scheduler/GPU/process/quota/storage and artifact write/read/delete
+before launch. Keep the verified GLFW export unchanged.
 
 # Exactly one new preflight round
 
-Use a fresh non-colliding root for three HalfCheetah seed-0 cells at the same
-81,920-step budget, one launch each for matched momentum 0.5, 0.7 and 0.8.
-Each must prove rc=0; environment construction; K=true agreement in runtime
-and run_info; frozen method/config identity; one `KACZMARZ_NO_HISTORY`; later
-real `KACZMARZ_PROJECTION_USED`; finite separate actor and critic residuals
-mapped to their exact systems; finite projection/gradient/curvature/KL/VF;
-complete logs/hashes/RC; and clean error scan.
+Use a fresh isolated root for three HalfCheetah seed-0 81,920-step cells, one
+each at matched momentum 0.5, 0.7 and 0.8. Each must prove rc=0; GLFW/MuJoCo
+construction; identical trainer/reporting config realpath and SHA; run_info
+Kaczmarz true; runtime/config/run_info identity; frozen method fields; one
+`KACZMARZ_NO_HISTORY`; later real `KACZMARZ_PROJECTION_USED`; finite distinct
+actor/critic residuals; finite projection/gradient/curvature/KL/VF; complete
+logs/hashes/RC and clean error scan.
 
-All three must pass. Any failure stops the task: no further telemetry change,
-second preflight, Kaczmarz downgrade, or formal launch.
+All three must pass. Any failure stops the task with no further path change,
+second preflight, Kaczmarz bypass or formal launch.
 
 # Conditional formal execution
 
-Do not pre-submit placeholder jobs. After complete gate review:
+Do not pre-submit placeholders. After complete gate review:
 
-- Wave 1 is the frozen first 24 cells on six V100s, max four trainers/card.
-- Wave 2 is the remaining 18 only after Wave 1 is terminal, GPUs released and
-  all logs/artifacts/errors reviewed. Waves cannot overlap.
-- At most 42 formal launches, one per cell, no automatic retries or additions.
+- Wave 1: frozen first 24 cells, six V100s, max four trainers/card.
+- Wave 2: remaining 18 only after Wave 1 is terminal, processes exited, GPUs
+  released and logs/artifacts reviewed; no overlap.
+- Maximum 42 formal launches, one per cell, no retry/addition/reordering.
 
-Record per cell identity, env/seed/momentum, job/node/GPU/concurrency, hashes,
-command, steps, reward/KL/VF, separate actor/critic residuals, projection
-creation/read/use/update counts and norms, artifacts/freshness, RC and error
-scan. Infrastructure failures remain separate. Performance below 3/5 of the
-strict matched K=false reference is only an early-stop candidate and must not
-be automatically cancelled.
+Record per cell method identity, config realpath/SHA, env/seed/momentum,
+job/node/GPU/concurrency, source/launcher hashes, command, steps, reward/KL/VF,
+actor/critic residuals, projection counters/norms, artifacts/freshness, RC and
+error scans. Infrastructure/path failures remain separate. Low performance is
+only an early-stop candidate and must not be automatically cancelled.
 
-# Outputs and completion
+# Outputs
 
-Update `.agent/STATE.md`, `.agent/AGENT_REPORT.md`, telemetry patch/diff, A/B
-evidence, preflight evidence, manifest state and conditional formal results.
-Preserve all K=false and K=true provenance in isolated roots. Commit and push
-only directly relevant files to `origin/agent-work`, record assignment/source/
-telemetry/evidence/delivery commits, then wake the same ChatGPT Planner with
-the full report and SHA asking for exactly one next bounded MuJoCo task.
+Update `.agent/STATE.md`, `.agent/AGENT_REPORT.md`, path-only patch/diff,
+bitwise audit, preflight evidence, manifest state and conditional formal
+results. Commit/push only directly relevant files to `origin/agent-work`, then
+wake the same ChatGPT Planner with the report and SHA asking for exactly one
+next bounded MuJoCo task.
 
 # Prohibited
 
-No scientific algorithm/solver/config/manifest change; no changed momentum,
-damping, normalization, clip, VF or endpoint; no Kaczmarz bypass; no second
-new preflight; no formal retry/extra cell; no non-Bede compute; no historical
-artifact overwrite; no unrelated changes.
+No second path-corrected preflight; no search/glob/default config; no config,
+algorithm, solver, manifest or scientific-field change; no Kaczmarz bypass;
+no formal retry/extra cell; no non-Bede compute; no historical overwrite; no
+unrelated change.
