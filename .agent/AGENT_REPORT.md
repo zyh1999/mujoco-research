@@ -3,7 +3,7 @@
 ## Metadata
 
 - Task-ID: `MUJOCO-MLP-FULLEF-FULLGGN-MOMENTUM-0708-20260824-04R`
-- Status: `RUNNING`
+- Status: `KFALSE_CLOSED_PRESERVED`
 - Inspection/launch start: `2026-08-24T13:14:30Z`
 - Starting HEAD: `061c0a0d1b23ae70254fbc788e92afb02295238f`
 - Target: `origin/agent-work`
@@ -180,7 +180,28 @@ running.
 - dual-5060 primary/tail/Swimmer-only launchers and Bede/CSF3 preflight,
   formal and submission scripts
 
-Formal runs remain active. Final metrics, paired analysis, final commit and
-Planner callback are pending terminal completion.
+The K=false Bede formal array later completed 24/24 cells with RC zero and a
+clean numerical/error scan. The dual-5060 queue was interrupted after two Ant
+seed0 completions; both seed1 cells stopped near 13% without RC and no later
+environment started. At the user's explicit direction, this task is closed
+with all evidence preserved and will not be resumed or mixed with K=true.
+
+## Replacement K=true task start
+
+- Task-ID: `MUJOCO-MLP-FULLEF-FULLGGN-KTRUE-M050708-S01-20260825-05`
+- Status: `RUNNING`
+- Assignment commit: `f68c1ed`
+- Formal matrix: 42 unique cells (`0.5/0.7/0.8 x 7 env x seeds 0,1`)
+- Placement: Bede only; six V100s; max four trainers/card; strict waves 24+18
+- Bede refresh: no user jobs; write/read/delete probe passed; `/nobackup` has
+  790 TiB available; many V100 nodes were idle.
+- Canonical trainer SHA256:
+  `04c87fcd0af1e351f91a2ae4b1bbb0dc19fe419e5878e33d374c36c50b15fbdc`.
+- Canonical K=false config SHA256:
+  `78c38c206c0f32aef90690af18718129bf34a39b974ed3ebcd6655b8fe823d86`.
+- The K=true config field diff is exactly `is_karzmarz: False -> True`.
+- A frozen 42-row manifest, Bede wave launchers and non-intervention runtime
+  telemetry for actual momentum-buffer `previous_projection` use are staged.
+- Mandatory three-setting preflight and formal launches are pending upload.
 
 TASK_RUNNING

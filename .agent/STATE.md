@@ -1,10 +1,26 @@
 # Current Project State
 
-Updated: 2026-08-24T14:59:20Z
+Updated: 2026-08-25T04:20:56Z
 
 ## Active bounded task
 
-- `MUJOCO-MLP-FULLEF-FULLGGN-MOMENTUM-0708-20260824-04R` is running.
+- `MUJOCO-MLP-FULLEF-FULLGGN-KTRUE-M050708-S01-20260825-05` is running under
+  the replacement task explicitly requested by the user and authored by the
+  existing ChatGPT Planner.
+- The new isolated matrix is no-shared large-batch MLP Full-EF actor plus
+  Full-GGN critic, Kaczmarz true, damping 0.03, normalization none, parameter
+  L2 clip 0.5, matched actor/critic momentum 0.5/0.7/0.8, seven environments
+  and seeds 0/1: exactly 42 formal cells, at most one launch per cell.
+- Only Bede is authorized. The frozen execution topology is six V100s, at
+  most four trainers/card, Wave 1=24 cells and Wave 2=18 cells with no overlap.
+- Bede refresh at `2026-08-25T05:20:56+01:00` found no user jobs, many idle
+  V100 nodes, 790 TiB available under `/nobackup`, and a fresh write/read/delete
+  probe passed. Canonical remote trainer/config hashes remain matched.
+
+## Closed-preserved prior task
+
+- `MUJOCO-MLP-FULLEF-FULLGGN-MOMENTUM-0708-20260824-04R` is
+  `KFALSE_CLOSED_PRESERVED` by explicit user replacement.
 - Scientific identity is the no-shared large-batch MLP Full-EF actor plus
   Full-GGN critic line, not the M2 Transformer FullEmp line.
 - Canonical `S2` is seeds `0,1`, selected by manifest order. Canonical
@@ -33,8 +49,11 @@ Updated: 2026-08-24T14:59:20Z
   concurrency but exposed the known Bede-only Swimmer `mujoco_py` dependency
   failure. Swimmer was removed from Bede; retry preflight `1074458_[0-5]`
   completed all 24 non-Swimmer seed runs with `rc=0` and a clean error scan.
-  Formal array `1074464_[0-5]` is now running all 24 cells on six allocated
-  V100s under the isolated retry4 root.
+  Formal array `1074464_[0-5]` completed all 24 cells with RC zero under the
+  isolated retry4 root. The old dual-5060 queue is preserved as interrupted:
+  two Ant seed0 cells completed, both seed1 cells stopped near 13%, and later
+  environments did not start. None of those cells will be resumed or mixed
+  into the K=true matrix.
 - At the user's direction, CSF3 jobs `19206549` and `19206550` were cancelled.
   One short preflight element completed before cancellation; no CSF3 formal
   training cell ran. The remaining HalfCheetah/Humanoid/HumanoidStandup cells

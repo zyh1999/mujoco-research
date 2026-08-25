@@ -1,4 +1,4 @@
-Status: READY
+Status: RUNNING
 Planner-Kind: ChatGPT
 Planner-Thread-ID: 6a8309f0-0bd0-83eb-a4ab-3ad1227b2e1c
 Executor-Callback: Wake this same Planner after AGENT_REPORT is pushed.

@@ -42,7 +42,7 @@ def command(args: argparse.Namespace, seed: int, timesteps: int) -> list[str]:
     ]
 
 
-def validate(seed_dir: Path, momentum: float, require_endpoint: bool) -> tuple[float | None, int]:
+def validate(seed_dir: Path, momentum: float, require_endpoint: bool, require_kaczmarz: bool) -> tuple[float | None, int]:
     stdout = (seed_dir / "stdout.log").read_text(errors="replace")
     stderr = (seed_dir / "stderr.log").read_text(errors="replace")
     combined = stdout + "\n" + stderr
@@ -51,6 +51,17 @@ def validate(seed_dir: Path, momentum: float, require_endpoint: bool) -> tuple[f
     expected = f"Independent SGD momentum: actor={momentum} critic={momentum}"
     if expected not in stdout:
         raise RuntimeError(f"missing runtime momentum telemetry: {expected}")
+    if require_kaczmarz:
+        if "KACZMARZ_NO_HISTORY" not in stdout:
+            raise RuntimeError("missing first-update Kaczmarz no-history telemetry")
+        used = re.findall(
+            r"KACZMARZ_PROJECTION_USED call=(\d+) buffers=(\d+) projection_norm=([-+0-9.eE]+) finite=(\d+)",
+            stdout,
+        )
+        if len(used) < 2:
+            raise RuntimeError("Kaczmarz previous_projection used fewer than two times")
+        if not all(int(buffers) > 0 and int(finite) == 1 and math.isfinite(float(norm)) for _, buffers, norm, finite in used):
+            raise RuntimeError("invalid Kaczmarz previous_projection telemetry")
     finite = [float(m.group(1)) for m in FINITE_RE.finditer(stdout)]
     if not finite or not all(math.isfinite(value) for value in finite):
         raise RuntimeError("missing or non-finite training telemetry")
@@ -88,7 +99,7 @@ def run_seed(args: argparse.Namespace, seed: int, timesteps: int, seed_dir: Path
     if rc:
         (seed_dir / "status").write_text("FAILED\n")
         raise RuntimeError(f"trainer rc={rc}")
-    result = validate(seed_dir, args.momentum, require_endpoint)
+    result = validate(seed_dir, args.momentum, require_endpoint, args.require_kaczmarz)
     (seed_dir / "status").write_text("FINISHED\n")
     return result
 
@@ -101,16 +112,17 @@ def main() -> int:
     parser.add_argument("--python", required=True)
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--env", choices=ENVS, required=True)
-    parser.add_argument("--momentum", type=float, choices=(0.7, 0.8), required=True)
+    parser.add_argument("--momentum", type=float, choices=(0.5, 0.7, 0.8), required=True)
     parser.add_argument("--gpu", type=int, default=0)
     parser.add_argument("--seeds", type=int, nargs="+", default=(0, 1))
     parser.add_argument("--timesteps", type=int, default=10_000_000)
     parser.add_argument("--preflight", action="store_true")
     parser.add_argument("--parallel-seeds", action="store_true")
+    parser.add_argument("--require-kaczmarz", action="store_true")
     args = parser.parse_args()
     if args.preflight:
         cell = args.run_root / "preflight" / args.env / f"momentum_{args.momentum}"
-        base_seed = 970 if args.momentum == 0.7 else 980
+        base_seed = args.seeds[0]
         seed_specs = [(base_seed, 81_920)]
         if args.parallel_seeds:
             seed_specs.append((base_seed + 1, 81_920))
@@ -127,6 +139,7 @@ def main() -> int:
         f"environment={args.env}\nmomentum={args.momentum}\nseeds={','.join(str(x[0]) for x in seed_specs)}\n"
         f"timesteps={seed_specs[0][1]}\ndamping=0.03\nnormalization=none\nkaczmarz=false\n"
         f"post_grad=parameter_l2_clip\nmax_grad_norm=0.5\nactor_rows=1024\ncritic_rows=1024\n"
+        f"kaczmarz_required={str(args.require_kaczmarz).lower()}\n"
     )
     rows = []
     try:

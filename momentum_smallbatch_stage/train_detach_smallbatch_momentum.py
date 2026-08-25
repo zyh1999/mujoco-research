@@ -364,6 +364,8 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
             pi_info = dict(kl=_kl.item(), ent=_entropy.item(), cf=torch.as_tensor(clipped, dtype=torch.float32).mean().item(), curr_lr=pi_optimizer.param_groups[0]['lr'], grad_norm=grad_norm.item(), ratio_max=_ratio.max().item(), ratio_min=_ratio.min().item())
         return _loss, _loss_pi, pi_info
 
+    kaczmarz_runtime = {"no_history": 0, "projection_used": 0}
+
     def RAT_ActorUpdate(_obs, _act, _adv, _outputs_old):
         # RAT solves a sample-space system before mapping the step back to parameters.
         _outputs = actor_critic.forward_pi(_obs)
@@ -509,6 +511,14 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
             if algo_config.is_karzmarz and len(gk_list) > 0:
                 g_k = torch.cat(gk_list, dim=0)
                 previous_projection = torch.mv(H, g_k)
+            if algo_config.is_karzmarz and previous_projection is None:
+                kaczmarz_runtime["no_history"] += 1
+                if kaczmarz_runtime["no_history"] <= 2:
+                    print(
+                        "KACZMARZ_NO_HISTORY "
+                        f"call={kaczmarz_runtime['no_history']} buffers={len(gk_list)}",
+                        flush=True,
+                    )
 
             use_actor_identity_kernel = bool(getattr(algo_config, 'actor_identity_kernel', False))
             use_full_gradient_rhs = (
@@ -546,6 +556,17 @@ def learn(world_size, algo, actor_critic, writer, venv, device,
                     normalization_eps=algo_config.fisher_kernel_normalization_eps,
                     previous_projection=previous_projection,
                 )
+                if previous_projection is not None:
+                    kaczmarz_runtime["projection_used"] += 1
+                    if kaczmarz_runtime["projection_used"] <= 4:
+                        projection_norm = previous_projection.norm().item()
+                        print(
+                            "KACZMARZ_PROJECTION_USED "
+                            f"call={kaczmarz_runtime['projection_used']} "
+                            f"buffers={len(gk_list)} projection_norm={projection_norm:.9g} "
+                            f"finite={int(math.isfinite(projection_norm))}",
+                            flush=True,
+                        )
 
         # udpate actor
         if use_grouped_rho:
