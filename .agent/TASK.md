@@ -1,57 +1,113 @@
-Status: RUNNING
+Status: READY
 Planner-Kind: ChatGPT
 Planner-Thread-ID: 6a8309f0-0bd0-83eb-a4ab-3ad1227b2e1c
 Executor-Callback: Wake this same Planner after AGENT_REPORT is pushed.
-Task-ID: MUJOCO-MLP-FULLEF-FULLGGN-MOMENTUM-0708-20260824-04R
+Task-ID: MUJOCO-MLP-FULLEF-FULLGGN-KTRUE-M050708-S01-20260825-05
 
 # 唯一科学目标
 
-在既定 no-shared large-batch MLP、Full-EF actor + Full-GGN critic 线上，建立七环境统一两 seed 的严格匹配 momentum 矩阵，新增并评估 actor/critic momentum `0.7/0.7` 与 `0.8/0.8`，公平比较 canonical low-momentum、`0.5/0.5` 和 `0.9/0.9`。本任务明确不属于 M2 FullEmp 线。
+启动一项独立 MuJoCo 实验：在 large-batch no-shared MLP、Full-EF actor +
+Full-GGN critic 线上，将 `Kaczmarz=true`，严格比较 matched actor/critic
+momentum `0.5/0.5`、`0.7/0.7`、`0.8/0.8`。覆盖 canonical 七环境和统一
+seeds `0,1`，共 42 个唯一 formal cells。本任务不是 M2 Transformer/FullEmp，
+也不是旧 `K=false` 任务的续跑；旧任务只作为 strict-matched parent 和独立
+comparison provenance。
 
-# Canonical scientific identity
+# Formal matrix 与启动上限
 
-以仓库七环境乘五 seed formal low-momentum matrix 为 canonical parent，恢复 exact source commit、trainer SHA256、config 和实际 low-momentum 数值，不得把 `m≈0` 改写为字面 0。固定：large-batch MLP；no-shared actor/critic；Full-EF/Full-GGN；damping `0.03`；normalization `none`；Kaczmarz `false`；parameter L2 clip `0.5`；actor momentum = critic momentum；相同 VF、环境/version/wrapper、初始化、rollout、minibatch、epochs、LR、batch geometry、precision、solver、KL、评估语义、nominal 10M budget 和 terminal convention。除 momentum、run identity/path 和 telemetry 外不得改变科学字段。
+- 冻结矩阵：3 momentum × 7 canonical environments × 2 seeds = 42 cells。
+- 顺序固定为 momentum `0.5 -> 0.7 -> 0.8`、canonical environment 顺序、
+  seed `0 -> 1`；不得按表现改变。
+- formal launch 最多 42 次；每 cell 最多一次；禁止自动重试、补 seed 或新增
+  setting。preflight 最多三个且不计入 42。
+- Wave 1 为 manifest 前 24 cells；Wave 2 为剩余 18 cells。Wave 1 全部进入
+  terminal scheduler/process 状态、GPU 释放且 artifacts 核验后才能启动 Wave 2；
+  两波禁止重叠。
 
-# 有界 seed 策略
+# Canonical matching parent
 
-1. 按 canonical low-momentum manifest 的预定义顺序选择前两个 seed ID 为统一 `S2`，禁止按表现或现有覆盖率选 seed。
-2. 五个 momentum、七环境均使用同一 `S2`。
-3. low-momentum 与 0.9 只复用 `S2` strict-valid cells，不重跑。
-4. 0.5 只复用相对 parent 字段严格匹配且属于 `S2` 的 cells，并补齐缺口。
-5. 新运行 `0.7 × 7 env × S2` 和 `0.8 × 7 env × S2`。
-6. 启动上限：0.7 最多14 cells，0.8 最多14 cells，0.5 缺口最多14 cells，总计最多42 cells；不得扩展五 seed。
+以刚完成的 `Kaczmarz=false` 同一 large-batch no-shared MLP Full-EF+Full-GGN
+formal 配置为唯一 parent。恢复并冻结 source/trainer/config SHA256、七环境
+ID/version/wrapper、网络与初始化、rollout、minibatch、epochs、LR、VF 全部
+语义、Full-EF/Full-GGN 构造、precision、solver/reduction、KL、评估、nominal
+10M 及 9,994,240 logged-step terminal convention。
 
-# 执行前证据门与资源放置
+新实验固定：
 
-- 完整读取四份 `.agent` 文件及 canonical low、0.5、0.9 manifests/configs/logs。
-- 刷新 CSF3、Bede、dual-5060 scheduler/quota、GPU/进程、trainer/container、磁盘、日志、reward/KL、artifacts 和错误扫描。
-- CSF3 为控制平面；Executor 自主决定 host、partition、GPU 和 concurrency。
-- Bede 仅在验证 artifacts 可持续写、读、回收后承载 formal cells。
-- 禁止 `.54` / `ws4090-31`；禁止 Jupyter。
-- 启动前建立五 momentum × 七环境 × `S2` formal matrix，核验 canonical identity/SHA256、low 实际值、0.9 和 0.5 相对 parent 的字段 diff、environment、seed、budget、terminal convention、artifact 和 provenance。
-- 若 low 与 0.9 在 momentum 外存在科学字段差异，标记 `BLOCKED_CANONICAL_REFERENCE`，不得启动或声称因果比较。
+- no-shared large-batch MLP；Full-EF actor；Full-GGN critic；
+- damping `0.03`；normalization `none`；Kaczmarz `true`；
+- parameter L2 clip `0.5`；actor momentum = critic momentum；seeds `0,1`；
+- 其余科学字段与 K=false parent 完全一致。
 
-# 配置、preflight 与正式运行
+相对对应 K=false cell 允许的科学差异只有 `Kaczmarz false -> true`；三个
+K=true setting 间允许的科学差异只有 matched actor/critic momentum。run ID、
+路径及非干预 telemetry 不算科学差异。
 
-- 从同一 parent 机械生成 0.5 缺口、0.7、0.8 配置，diff 仅含 actor/critic momentum、run identity/path 和 telemetry。
-- 每个新 setting 至少一次无训练/单-update preflight，验证 MLP/no-shared、Full-EF/Full-GGN、d=0.03、normalization none、K=false、L2 clip=0.5、VF 匹配、momentum 精确解析，且 gradients、curvature、solver residual、VF telemetry 有限。
-- preflight 失败不得降级或调参；只启动缺失且过门 cells，使用非碰撞路径，从头训练至 canonical 10M 终点，不借用其他 momentum 状态。
-- 每 cell 记录 host/job/PID、container/image、commit/config/SHA256、seed、momentum、steps、reward、KL、VF、EF/GGN/solver telemetry、artifact freshness 和错误扫描。
-- 低于最高严格 reference 的 3/5 或明显崩溃只标记 `early-stop-candidate`，不得自动取消。
-- 区分 algorithmic、numerical、infrastructure/dependency、scheduler/quota waiting、matching/provenance blocker。
+# 旧任务收口与 provenance
 
-# 科学分析与输出
+启动前在报告中冻结旧任务：Bede `24/24 completed`；dual-5060 按现有证据
+标记 interrupted；保留全部 job/run ID、commit、配置、日志和 artifacts，并
+标记 `KFALSE_CLOSED_PRESERVED`。禁止恢复、补跑、覆盖、删除或重新分类旧
+dual-5060 cells。新旧结果不得合并为同一 run/seed/统计样本；新实验必须使用
+独立非碰撞 root、manifest、日志、checkpoint 和 artifact 路径。
 
-只使用 strict-valid 同环境同 `S2` cells，输出七环境 × 五 momentum × 两 seed 终点表；计算 0.7/0.8 相对 low/0.5/0.9 的 paired difference、ratio、win/loss/tie 和 rank；报告逐环境两-seed mean/std，但不得声称显著性或最终排名。跨环境汇总只用仓库预定义 normalization，并保留逐环境结果。
+# 唯一允许资源与拓扑
 
-更新 `.agent/STATE.md`、`.agent/AGENT_REPORT.md` 和正式结果表，包含 Task-ID、起止时间/HEAD、canonical identity/SHA256、low 实际值和 S2 证据、formal matrix、matching/dedup、placement、preflight、cell 状态/指标/artifacts/error scan、paired analysis、限制、early-stop/失败分类、唯一下一步建议、changed files、commit 和 push。
+- 只允许 Bede 六张 V100；禁止访问、查询、分配或使用 CSF3、dual-5060、
+  其他远端、`.54`、`ws4090-31`；禁止 Jupyter。
+- 启动前刷新 Bede scheduler/GPU/process/storage/log 状态，并验证新 root 可写、
+  artifact 可读回和空间充足。无法获得六卡或回收验证失败则报告
+  `BLOCKED_INFRASTRUCTURE`，不得切换平台。
+- 最多六张 V100；每卡最多四个 trainer；全局最多 24；禁止提高每卡并发。
 
-必须保留且不混入比较：原 M2 30/35 与五个 Swimmer dependency failures、linked rerun 5/5、Bede `1072326_0-17` scientifically unmapped、`18302268_10` unresolved/unmapped 及其他历史 provenance。
+# Mandatory Kaczmarz preflight
 
-# Acceptance Criteria / Prohibited Actions
+正式启动前分别对 momentum `0.5`、`0.7`、`0.8` 完成三个代表环境 seed0
+preflight。每个必须以运行时证据证明：
 
-- 身份必须是 no-shared large-batch MLP Full-EF+Full-GGN，而非 M2 FullEmp。
-- 五 momentum 使用同一 `S2` 且除 momentum 外完全一致；0.5 仅补 S2 缺口，0.7/0.8 各最多14 cells。
-- 所有启动 cells 完成 canonical 终点或有明确失败证据；只用 strict-valid paired cells 下结论。
-- 禁止 M2 momentum 补齐、shared、非 Full-EF/GGN、Kaczmarz、actor/critic momentum 不一致、momentum 专属调参、按表现选 seed、扩展五 seed、新增 momentum、覆盖历史 artifacts、借用状态、猜测 provenance、Procgen/Isaac 和无关提交。
-- 报告提交并推送至 `origin/agent-work`；成功后唤醒同一 Planner，请求恰好一个下一步有界 MuJoCo 任务。
+1. `Kaczmarz=true` 被解析；
+2. 首次符合条件的 update 建立 SGD momentum history；
+3. 至少第二次 update 从非空 momentum buffer 计算并实际传入
+   `previous_projection`；不得恒空或每步错误重置；
+4. actor Full-EF、critic Full-GGN、matched momentum、d=0.03、normalization
+   none、parameter L2 clip=0.5、no-shared MLP 和 parent VF 语义全部匹配；
+5. projection norm、solver residual、gradient、curvature、VF、KL telemetry 有限；
+6. 保存代码路径、调用顺序和 runtime telemetry。
+
+任一 setting preflight 失败，不得关闭 Kaczmarz、绕过 projection、改变 solver、
+damping、momentum、normalization、clip 或 VF；不得启动该 setting 的 14 cells，
+标记 `PRECHECK_BLOCKED_KACZMARZ_PATH`。若暴露算法实现缺陷，本任务不授权修复。
+
+# Formal 运行、分析与报告
+
+仅启动 matching audit 和对应 preflight 通过的 cells。每 cell 记录 ID、env、seed、
+momentum、Bede job/node/GPU/同卡并发、source/config SHA256、命令、steps、reward、
+KL、VF、EF/GGN residual、projection 创建/读取/更新计数和 norm、artifacts、
+freshness、exit code 与 NaN/Inf/OOM/traceback/dependency/disk/permission/scheduler
+错误扫描。基础设施失败不得算算法失败或进入均值；禁止自动重试。
+
+低于同环境最高 strict-matched K=false baseline 的 3/5 或明显崩溃只标记
+`early-stop-candidate`，不得因科学表现自动取消。失败须区分 algorithmic、
+numerical、infrastructure、scheduler/quota、matching/preflight。
+
+仅用 strict-valid 同 env/seed/momentum paired cells，输出七环境×三 momentum×
+两 seed 的 K=true 表，并与 K=false parent 配对；报告逐 seed difference/ratio、
+两 seed mean/std、win/loss/tie、solver/projection/KL/VF 稳定性。跨环境只用仓库
+预定义 normalization，不直接平均原始 reward；两 seed 不得声称显著性或最终最优。
+
+更新 `.agent/STATE.md`、`.agent/AGENT_REPORT.md` 和正式结果文件，包含旧任务
+closed-preserved 快照、42-cell manifest、matching audit、Bede 资源证据、三个
+preflight、两波映射、每 cell 证据、paired analysis、失败分类、未启动 cells、
+唯一下一步、changed files、commit 和 push。
+
+# Acceptance / prohibited
+
+- 身份、K=true、三个 exact momentum、d=0.03、normalization none、L2 clip .5、
+  七环境 S01、42 个唯一 cells 和 previous_projection 真正使用均须有证据。
+- 只用 Bede 六卡、每卡最多四 trainer、全局最多24、严格 24+18 两波。
+- 不超过42 formal launches，无自动重试或额外 cells；新旧 provenance 隔离。
+- 禁止 M2、shared、非 Full-EF/GGN、Kaczmarz 降级、actor/critic momentum 不同、
+  momentum 专属调参、恢复旧 5060、覆盖历史 artifacts 或提交无关改动。
+- 报告及必要代码/manifest/results 提交并推送 `origin/agent-work`；记录 assignment、
+  source/config、evidence、delivery commit 和 push 验证。完成后唤醒同一 Planner，
+  请求恰好一个下一步有界 MuJoCo 任务。
