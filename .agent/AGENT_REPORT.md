@@ -497,3 +497,82 @@ Wave 2 was not submitted and remains gated on Wave 1 terminal state, process
 exit, GPU release and complete artifact review.
 
 TASK_RUNNING
+
+## Concurrent Wave 2 launch and verification
+
+### Authorization and scope
+
+- Task-ID: `MUJOCO-KTRUE-CONCURRENT-WAVE2-LAUNCH-VERIFY-20260825-11`
+- Status: `TASK_COMPLETE`
+- User override: explicit authorization for Wave 2 to overlap Wave 1 on six
+  additional Bede V100s
+- Starting delivery: `3ae08bc`
+- Assignment commit: `a094ebc`
+- Evidence cutoff: `2026-08-25T06:51:29Z`
+
+The new ChatGPT Planner task overrides only the prior serial/no-overlap and
+six-total-GPU limits. It authorizes exactly the frozen remaining 18 cells,
+six additional disjoint Bede V100s, twelve Bede GPUs total and at most four
+trainers per card. It does not authorize retries, dependency repair, Wave 1
+intervention, scientific changes or non-Bede compute.
+
+### Immediate Bede gate
+
+Wave 1 remained live as `1074582_[0-5]`. Its exact physical allocation was:
+
+- `gpu024`: indices 0, 2, 1 and 3;
+- `gpu025`: indices 0 and 2.
+
+Bede had numerous fully idle four-V100 nodes, 790 TiB free under `/nobackup`,
+and the target-root write/read/delete probe passed. No Wave 2 cell path or
+job-ID file existed. Frozen hashes matched:
+
+- worker `1ea6d60d21674e9b46acde4e7ac5ea02e2a7bcce403645ef07ba6f219497a054`;
+- trainer `b2dbc873374df12527c83ffec581cdb3169e9d0cdea12fb886fc29c17c49c606`;
+- config `cfe6e0b87f51b998e4c5b4f2315446a9f591f7cf5a7b8fbfa979c98ba5acffef`;
+- manifest `e05b7fddfa3d588c69a83138791e6eee53632b121be4e738a0c25e21948828db`;
+- Wave launcher `150b57231dc0fa8977696634c6e86134082d7c08196ad43049bbb9c1ccdbd878`.
+
+### Wave 2 submission and disjoint topology
+
+Wave 2 `1074588_[0-5]` was submitted without a Wave 1 dependency. All six
+elements entered RUNNING. Exact Wave 2 physical allocation:
+
+- `gpu025`: index 3;
+- `gpu026`: indices 0, 2, 1 and 3;
+- `gpu027`: index 0.
+
+This set is disjoint from Wave 1. Slurm allocated one V100 per array element.
+The launcher assigned two momentum/environment parents to two elements and
+one parent to four elements: peak four trainers on the first two Wave 2 cards,
+two on each other card, exactly 18 Wave 2 formal attempts. Combined formal
+launch accounting is Wave 1=24, Wave 2=18, cumulative=42.
+
+### Bounded startup verification
+
+All 18 Wave 2 cells produced unique command and PID artifacts. Their startup
+classification is:
+
+- running-verified (14): momentum-0.7 Walker2d seeds 0/1 and momentum-0.8
+  Ant, HalfCheetah, Hopper, Humanoid, HumanoidStandup and Walker2d seeds 0/1;
+- failed-infrastructure/dependency (4): momentum-0.7 and momentum-0.8
+  Swimmer seeds 0/1, each with exact `No module named 'mujoco_py'` before
+  training.
+
+The 14 running cells report exact actor/critic momentum, one
+`KACZMARZ_NO_HISTORY`, finite actor and critic solver residuals, and the
+unchanged exact config realpath/SHA with `kaczmarz=true`. First available
+logged step was 81,920 for the faster environments. The non-Swimmer startup
+scan found no NaN/Inf, OOM, traceback, linear-algebra, GLFW, dependency,
+disk or permission error.
+
+Wave 1 was not cancelled, paused, rebound, migrated or otherwise changed. At
+the cutoff it remained 22 running plus its two preserved momentum-0.5 Swimmer
+dependency failures. After all six Swimmer failures exited, 36 trainers were
+live across both waves. No retry, dependency installation, host switch,
+manifest edit or scientific change occurred.
+
+Detailed topology and status evidence is preserved in
+`ktrue_momentum_stage/wave2_1074588_startup_evidence.txt`.
+
+TASK_COMPLETE

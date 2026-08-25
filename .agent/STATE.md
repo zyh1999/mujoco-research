@@ -1,6 +1,26 @@
 # Current Project State
 
-Updated: 2026-08-25T05:13:01Z
+Updated: 2026-08-25T06:51:29Z
+
+## Concurrent Wave 2 launch
+
+- The user explicitly authorized concurrent Wave 2 on six additional Bede
+  V100s. ChatGPT Planner task
+  `MUJOCO-KTRUE-CONCURRENT-WAVE2-LAUNCH-VERIFY-20260825-11` replaced the prior
+  no-overlap limit; assignment commit is `a094ebc`.
+- Wave 2 `1074588_[0-5]` launched all 18 remaining frozen cells without a
+  Wave 1 dependency. Wave 1 and Wave 2 use disjoint physical GPU identities:
+  Wave 1=`gpu024:{0,1,2,3},gpu025:{0,2}`; Wave 2=
+  `gpu025:{3},gpu026:{0,1,2,3},gpu027:{0}`.
+- All 18 Wave 2 command/PID artifacts exist. Fourteen non-Swimmer cells are
+  running-verified with exact matched momentum, Kaczmarz no-history and finite
+  actor/critic residual telemetry; their startup error scan is clean. The four
+  Wave 2 Swimmer cells are classified failed-infrastructure/dependency due to
+  the unchanged missing `mujoco_py`, with no retry or repair.
+- Wave 1 remained untouched and live: 22 running, two previously classified
+  momentum-0.5 Swimmer dependency failures. Current combined live trainers
+  are 36 after the six Swimmer dependency exits; peak formal attempts remain
+  bounded at 42 and no GPU exceeded four trainer launches.
 
 ## Current config-path-corrected K=true execution
 
