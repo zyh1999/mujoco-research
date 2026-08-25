@@ -1,16 +1,27 @@
 # Current Project State
 
-Updated: 2026-08-25T04:29:26Z
+Updated: 2026-08-25T04:42:00Z
 
 ## Active bounded task
 
-- `MUJOCO-MLP-FULLEF-FULLGGN-KTRUE-M050708-S01-20260825-05` is blocked after
-  its one authorized three-setting preflight attempt; no formal cell launched.
-  The failure is infrastructure-only: the new Bede scripts omitted the
-  previously required `$ROOT/local/glfw-conda/lib` entry in `LD_LIBRARY_PATH`,
-  so all three HalfCheetah constructors exited before any optimizer/update.
-  Dependent Wave 1 was cancelled without starting. The Planner prohibited
-  automatic preflight retry, so a bounded launcher-correction task is needed.
+- `MUJOCO-KTRUE-GLFW-PREFLIGHT-AND-BEDE42-20260825-07` is blocked at its formal
+  launch gate after its single authorized corrected preflight attempt. The
+  launcher-only GLFW correction succeeded and job `1074573_[0-2]` completed
+  all three momentum settings with RC zero.
+- Runtime evidence for each of momentum 0.5/0.7/0.8 shows exact matched actor
+  and critic momentum, one first-update `KACZMARZ_NO_HISTORY`, and four later
+  `KACZMARZ_PROJECTION_USED` calls with seven nonempty buffers and finite
+  projection norms. GLFW/MuJoCo construction and finite KL, actor-gradient,
+  critic-gradient and critic-step telemetry also passed.
+- The frozen worker produced no actor/critic solver-residual telemetry, while
+  its auxiliary `run_info.txt` still hardcodes `kaczmarz=false` despite
+  unambiguous runtime `karzmarz_True` and projection-use evidence. The READY
+  task requires finite solver-residual evidence and prohibits worker/trainer
+  changes or a second corrected preflight retry, so the formal gate cannot be
+  marked PASS. Formal launch count remains zero; all 42 cells are unstarted.
+- The corrected isolated root is
+  `/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_ktrue_m050708_s01_10m_20260825_glfwfix1`.
+- Assignment commit is `52dcce1`; corrected-launcher commit is `f209f22`.
 - The new isolated matrix is no-shared large-batch MLP Full-EF actor plus
   Full-GGN critic, Kaczmarz true, damping 0.03, normalization none, parameter
   L2 clip 0.5, matched actor/critic momentum 0.5/0.7/0.8, seven environments

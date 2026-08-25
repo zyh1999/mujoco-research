@@ -1,0 +1,20 @@
+--- bede_ktrue_preflight.sbatch
++++ bede_ktrue_preflight_glfwfix.sbatch
+@@ -11,6 +11,7 @@
+ 
+ set -Eeuo pipefail
+ ROOT=/nobackup/projects/bdman37/yihe
++export LD_LIBRARY_PATH=$ROOT/local/glfw-conda/lib:${LD_LIBRARY_PATH:-}
+ REPO=$ROOT/src/ICML2026-RAT
+ STAGE=$REPO/ktrue_momentum_stage
+ PY=$ROOT/ppc64le/envs/rat/bin/python
+--- bede_ktrue_wave.sbatch
++++ bede_ktrue_wave_glfwfix.sbatch
+@@ -11,6 +11,7 @@
+ 
+ set -Eeuo pipefail
+ ROOT=/nobackup/projects/bdman37/yihe
++export LD_LIBRARY_PATH=$ROOT/local/glfw-conda/lib:${LD_LIBRARY_PATH:-}
+ REPO=$ROOT/src/ICML2026-RAT
+ PY=$ROOT/ppc64le/envs/rat/bin/python
+ RUN_ROOT=${RUN_ROOT:?RUN_ROOT must be exported}

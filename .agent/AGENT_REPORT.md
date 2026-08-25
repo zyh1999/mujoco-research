@@ -221,4 +221,118 @@ with all evidence preserved and will not be resumed or mixed with K=true.
   is a launcher-only correction restoring the known Bede GLFW library path,
   followed by the same three preflights; no algorithm/config/manifest change.
 
+## Corrected GLFW preflight task
+
+### Metadata
+
+- Task-ID: `MUJOCO-KTRUE-GLFW-PREFLIGHT-AND-BEDE42-20260825-07`
+- Status: `BLOCKED_MATCHING_PREFLIGHT`
+- Start: `2026-08-25T04:31:00Z`
+- Evidence cutoff: `2026-08-25T04:40:46Z`
+- Starting HEAD: `32c8aef`
+- Assignment commit: `52dcce1`
+- Corrected-launcher commit: `f209f22`
+- Target: `origin/agent-work`
+
+### Preserved provenance
+
+- K=false remains
+  `KFALSE_CLOSED_PRESERVED_USER_AUTHORIZED_REPLACEMENT`: Bede 24/24 complete,
+  dual-5060 interrupted. No old cell was resumed, changed or mixed.
+- The prior K=true root remains immutable. Preflight `1074569_[0-2]` remains a
+  three-cell pre-optimizer GLFW infrastructure failure. Dependent Wave 1
+  `1074570_[0-5]` remains cancelled after `DependencyNeverSatisfied`, elapsed
+  zero. Its formal launch count remains zero.
+- The corrected attempt used a new root:
+  `/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_ktrue_m050708_s01_10m_20260825_glfwfix1`.
+
+### Fresh Bede gate
+
+At `2026-08-25T05:35:29+01:00`, Bede showed no `yihe` jobs. Numerous V100
+nodes were idle; `/nobackup` had 790 TiB available. The target filesystem
+write/read/delete probe passed with SHA256
+`862fb1033d47e0fe2e65deb331d5669e0a3d20cee50d6965f4efb47c1d810dc8`.
+Only Bede was queried or used. No CSF3, dual-5060, other remote or Jupyter was
+accessed.
+
+### Launcher-only correction
+
+The old/new line diffs contain exactly one added line in each corrected copy:
+
+`export LD_LIBRARY_PATH=$ROOT/local/glfw-conda/lib:${LD_LIBRARY_PATH:-}`
+
+It is placed after canonical `ROOT` and before Python/MuJoCo/GLFW. Hashes:
+
+- old preflight: `21e7c5c3418359a2ceb97ddbf4aad5a12aa731661521669afaa89d60be9f02df`
+- corrected preflight: `8c52fa30c7f0496217b29eb78fc94754bc5bb856dd594435283b4e60e34d99b7`
+- old wave: `4206a32522ab4d1cf8cff746cb992da847413cfc33445637cbdff9528a7e81c3`
+- corrected wave: `f24c8e91b3166aab6eccf55dd1778076e99ec726dfa2d9108f722654feed1161`
+
+The frozen manifest remains 42 unique rows, SHA256
+`e05b7fddfa3d588c69a83138791e6eee53632b121be4e738a0c25e21948828db`.
+Config remains
+`cfe6e0b87f51b998e4c5b4f2315446a9f591f7cf5a7b8fbfa979c98ba5acffef`;
+worker remains
+`905487097a66102e53da339dd6471593c45eb44aa260d49619273d7a6519b83b`;
+trainer remains
+`eaa45d32b18abce80e1427413f1804f796b38edb4e99f8ca73e9ed0e91937a71`.
+No scientific source/config/manifest field changed.
+
+Reproducing the launcher's environment after its module loads yielded:
+
+`/opt/software/builder/developers/compilers/cuda/12.4.1/1/default/lib64:/opt/software/builder/developers/compilers/gcc/12.2/1/default/lib64:/opt/software/builder/developers/compilers/gcc/12.2/1/default/lib:/nobackup/projects/bdman37/yihe/local/glfw-conda/lib:/opt/software/slurm/default/lib:/opt/software/slurm/default/lib`
+
+The corrected runs created HalfCheetah and entered training, confirming that
+the prior GLFW loader blocker was removed.
+
+### Single authorized corrected preflight
+
+Array `1074573_[0-2]` ran on `gpu024`. All three elements ended
+`COMPLETED`, elapsed `00:01:13`, exit `0:0`.
+
+| Momentum | Runtime actor/critic | No-history | Projection-use calls | Buffers | Projection norms | Finite training telemetry | Error scan |
+|---:|---|---:|---:|---:|---|---|---|
+| 0.5 | 0.5 / 0.5 | 1 | 4 | 7 | 2.9623611, 3.69259953, 3.88857841, 4.12274885 | KL 0.0108, actor grad 2.49, VF grad/step 0.958/0.958 | clean |
+| 0.7 | 0.7 / 0.7 | 1 | 4 | 7 | 2.9623611, 4.1504364, 4.75820208, 5.26260614 | KL 0.0103, actor grad 2.49, VF grad/step 0.744/0.744 | clean |
+| 0.8 | 0.8 / 0.8 | 1 | 4 | 7 | 2.9623611, 4.39844561, 5.28521872, 6.08992577 | KL 0.0208, actor grad 2.51, VF grad/step 0.691/0.691 | clean |
+
+All projection events reported `finite=1`. Runtime log paths contain
+`karzmarz_True`; the exact-kernel Full-EF actor path formed score rows and
+passed the nonempty momentum-buffer projection to the solver. Commands keep
+`critic_update=gn`, `critic_optimizer=sgd`, both curvature subsamples zero,
+damping 0.03 and normalization none. The config retains no-shared MLP and
+parameter L2 clip 0.5. No NaN/Inf, OOM, traceback, linear-algebra, assertion or
+GLFW import marker was found.
+
+### Formal gate decision
+
+The formal gate is `BLOCKED`, not `PASS`, for two evidence defects:
+
+1. Neither stdout, stderr nor preflight artifacts contain actor or critic
+   solver-residual telemetry, so the READY task's finite residual requirement
+   cannot be proven.
+2. The frozen worker's auxiliary `run_info.txt` hardcodes `kaczmarz=false` even
+   when `--require-kaczmarz` is set. Runtime evidence unambiguously shows
+   Kaczmarz true, but the contradictory identity record cannot be silently
+   relabeled.
+
+The task explicitly prohibits worker/trainer changes and any second corrected
+preflight retry. Therefore no workaround or repeat was attempted. No Wave 1
+placeholder was submitted. Formal launch count is zero, formal seed-status
+count is zero and all 42 formal cells remain unstarted.
+
+### Evidence and next action
+
+- `ktrue_momentum_stage/glfwfix_launcher.diff` preserves the exact launcher diff.
+- `ktrue_momentum_stage/preflight_1074573_evidence.txt` preserves the terminal
+  scheduler, runtime, projection, finite-value and gate summary.
+- Remote root preserves source hashes, both diffs, frozen manifest, commands,
+  per-seed stdout/stderr/RC/status and metrics.
+
+The only recommended next action is a new Planner-authored bounded task that
+explicitly authorizes reporting-only telemetry corrections for the stale
+`run_info` Kaczmarz field and actor/critic solver residuals, followed by one new
+isolated preflight gate. It must preserve the scientific configuration and
+continue to prohibit formal launch until that gate passes.
+
 BLOCKED
