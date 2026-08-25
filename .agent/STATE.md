@@ -1,6 +1,31 @@
 # Current Project State
 
-Updated: 2026-08-25T04:57:00Z
+Updated: 2026-08-25T05:13:01Z
+
+## Current config-path-corrected K=true execution
+
+- `MUJOCO-KTRUE-CONFIGPATH-PREFLIGHT-AND-BEDE42-20260825-09` is running.
+  Assignment commit is `08c56ea`; path-only source commit is `39a789d`.
+- Bede path semantics passed: reporting and trainer both resolve the frozen
+  stage config realpath, SHA256 is
+  `cfe6e0b87f51b998e4c5b4f2315446a9f591f7cf5a7b8fbfa979c98ba5acffef`,
+  and the parsed value is Kaczmarz true. The old `configurations/` path fails
+  explicitly with `FileNotFoundError`; there is no search or fallback.
+- The repeated fixed-input residual audit passed RC zero with every parameter,
+  optimizer/momentum state, direction, previous projection, RNG, loss, KL and
+  VF field bitwise equal; actor and critic residuals remained finite.
+- The only real new preflight round, `1074579_[0-2]`, completed 3/3 with RC
+  zero. Every momentum has matching actor/critic runtime value, K=true identity,
+  one no-history marker, four real projection-use markers, four finite actor
+  and critic residuals, finite training telemetry and a clean error scan.
+- Wave 1 job `1074582_[0-5]` is running on six one-GPU allocations: four V100s
+  on `gpu024` and two on `gpu025`. It created 24 trainer commands/PIDs, exactly
+  four trainers per allocated card and 24 globally. Twenty-two cells are
+  running. The two momentum-0.5 Swimmer seeds failed during environment
+  construction because Bede lacks `mujoco_py`; this is the preserved known
+  Bede dependency failure, not a Kaczmarz/numerical result. No retry, bypass,
+  cancellation or alternate host was used.
+- Wave 2 has not been submitted and cannot overlap Wave 1.
 
 ## Active bounded task
 

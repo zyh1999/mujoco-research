@@ -419,3 +419,81 @@ passing that exact path explicitly), without copying/changing the config, then
 permits one new isolated three-cell preflight and conditional Bede Wave 1.
 
 BLOCKED
+
+## Config-path-corrected K=true task
+
+### Assignment and path-only correction
+
+- Task-ID: `MUJOCO-KTRUE-CONFIGPATH-PREFLIGHT-AND-BEDE42-20260825-09`
+- Status: `TASK_RUNNING`
+- Assignment commit: `08c56ea`
+- Path-only source commit: `39a789d`
+- Evidence cutoff: `2026-08-25T05:13:01Z`
+- Bede root:
+  `/nobackup/projects/bdman37/yihe/perf_runs/bede_mlp_fullEF_fullGGN_ktrue_m050708_s01_10m_20260825_configpathfix2`
+
+The reporting worker now accepts the exact stage config path, resolves and
+reads that file directly, records its realpath/SHA256/parsed Kaczmarz value,
+and derives the trainer's required `configs/`-relative argument so the
+trainer's existing loader resolves to that same stage file. No directory
+search, glob, default, fallback, copy, config edit or trainer-math edit was
+introduced. The launchers only pass that explicit path.
+
+Before/after SHA256 values:
+
+- worker: `fc5eb1756bd5f0b9ad9aa539cf74f32583761a11153b6f59c31501fe0cb95c3e`
+  -> `1ea6d60d21674e9b46acde4e7ac5ea02e2a7bcce403645ef07ba6f219497a054`;
+- preflight launcher: `8c52fa30c7f0496217b29eb78fc94754bc5bb856dd594435283b4e60e34d99b7`
+  -> `d1d01159a953a3dcc3f70d71c5ce36076d83e3fc6ecc1e2177e5691eeaa9d769`;
+- Wave launcher: `f24c8e91b3166aab6eccf55dd1778076e99ec726dfa2d9108f722654feed1161`
+  -> `150b57231dc0fa8977696634c6e86134082d7c08196ad43049bbb9c1ccdbd878`.
+
+On Bede, reporting and trainer both resolved
+`/nobackup/projects/bdman37/yihe/src/ICML2026-RAT/ktrue_momentum_stage/rat_mlp_detjc_normnone_ktrue_d003_lrv01_e4_mlp.yaml`.
+Its SHA256 is the frozen
+`cfe6e0b87f51b998e4c5b4f2315446a9f591f7cf5a7b8fbfa979c98ba5acffef`
+and the parser returned `kaczmarz=true`. The old wrong `configurations/` path
+raised `FileNotFoundError`, proving that no fallback is present.
+
+The fixed-input nonintervention audit again returned RC zero and
+`all_bitwise_equal=true` for actor/critic parameters, both optimizer states
+including momentum, directions, previous projection, RNG, loss, KL and VF.
+Detached actor residual was `2.5891012001011404e-07`; critic residual was
+`7.192447242232447e-07`; all residual components were finite.
+
+### Single authorized preflight
+
+The first setup attempt used `configpathfix1` but stopped before `sbatch`
+because its evidence hash list named a nonexistent local-source trainer path.
+It produced no job ID and launched zero cells; the empty setup root is
+preserved. The new non-colliding `configpathfix2` root contains the only real
+preflight round.
+
+Array `1074579_[0-2]` ran on `gpu024`; all three elements completed in
+1m10-1m11s with `ExitCode=0:0`. Momentum 0.5/0.7/0.8 each recorded the exact
+stage config realpath and frozen SHA, `kaczmarz=true`, matching actor/critic
+runtime momentum, one `KACZMARZ_NO_HISTORY`, four
+`KACZMARZ_PROJECTION_USED` events with seven buffers and finite distinct
+norms, four finite actor residuals and four finite critic residuals. KL,
+actor-gradient, critic-gradient and critic-step values were finite. The
+traceback/OOM/NaN/Inf/GLFW/dependency scan was empty.
+
+### Wave 1 live state
+
+After the complete gate passed, Wave 1 `1074582_[0-5]` was submitted with no
+placeholder. All six array elements are running: elements 0-3 on four V100s
+of `gpu024`, and 4-5 on two V100s of `gpu025`; every element has
+`gres/gpu:1`. The root contains 12 momentum/environment parents and 24 seed
+commands/PID files, which is exactly four trainers per allocated card and 24
+globally.
+
+At the cutoff, 22 seed cells were running. Both momentum-0.5 Swimmer seeds
+failed before training with the known Bede-only
+`gymnasium.error.DependencyNotInstalled: No module named 'mujoco_py'`.
+They remain classified as infrastructure/dependency failures. No retry,
+Kaczmarz bypass, config change, cancellation, CSF3/5060 use or replacement
+cell was attempted. The other 22 cells had no early numerical/error marker.
+Wave 2 was not submitted and remains gated on Wave 1 terminal state, process
+exit, GPU release and complete artifact review.
+
+TASK_RUNNING

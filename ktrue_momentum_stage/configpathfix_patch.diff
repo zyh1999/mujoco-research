@@ -1,0 +1,28 @@
+Path-only correction summary
+============================
+
+worker_before_sha256=fc5eb1756bd5f0b9ad9aa539cf74f32583761a11153b6f59c31501fe0cb95c3e
+worker_after_sha256=1ea6d60d21674e9b46acde4e7ac5ea02e2a7bcce403645ef07ba6f219497a054
+preflight_before_sha256=8c52fa30c7f0496217b29eb78fc94754bc5bb856dd594435283b4e60e34d99b7
+preflight_after_sha256=d1d01159a953a3dcc3f70d71c5ce36076d83e3fc6ecc1e2177e5691eeaa9d769
+wave_before_sha256=f24c8e91b3166aab6eccf55dd1778076e99ec726dfa2d9108f722654feed1161
+wave_after_sha256=150b57231dc0fa8977696634c6e86134082d7c08196ad43049bbb9c1ccdbd878
+
+Worker diff scope:
+- import hashlib;
+- replace repo/configurations/name lookup with strict resolution and direct
+  reading of the explicitly supplied config path;
+- return and report parsed Kaczmarz, config realpath and SHA256;
+- derive the trainer loader's configs-relative argument and assert that it
+  resolves to the same realpath before spawning the trainer;
+- replace --config with required --config-path;
+- add config_path, config_realpath, config_sha256 and
+  trainer_config_realpath fields to run_info.txt.
+
+Launcher diff scope:
+- preflight passes the exact stage config with --config-path;
+- Wave launcher defines the already existing stage directory and passes the
+  same exact stage config with --config-path.
+
+No config, trainer mathematics, solver, optimizer, manifest, GLFW export,
+scientific parameter or training-control path changed.
